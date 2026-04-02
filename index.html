@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Day 2: Tailwind Basics</title>
+    <title>Day 3 | Layout Mastery</title>
 </head>
-<body class="bg-slate-950 text-white flex flex-col items-center justify-center min-h-screen gap-8">
+<body class="bg-slate-950 text-white font-sans">
 
-    <h1 class="text-3xl md:text-5xl font-bold text-blue-400 md:text-emerald-400">
-        Day 2: Learning Layouts
-    </h1>
+    <nav class="flex justify-between items-center px-8 py-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0">
+        <div class="text-xl font-bold tracking-tighter">TANAY<span class="text-blue-500">.CODES</span></div>
+        
+        <div class="hidden md:flex gap-8 text-slate-400">
+            <a href="#" class="hover:text-white transition-colors">Home</a>
+            <a href="#" class="hover:text-white transition-colors">Projects</a>
+        </div>
 
-    <div class="w-40 h-40 bg-red-600 hover:bg-yellow-500 rounded-2xl transition-all duration-300 flex items-center justify-center cursor-pointer">
-        <span class="font-bold">Hover Me</span>
-    </div>
+        <button class="bg-blue-600 px-5 py-2 rounded-lg font-bold text-sm hover:bg-blue-500 transition-all">
+            Hire Me
+        </button>
+    </nav>
 
-    <button class="bg-blue-600 px-10 py-3 rounded-full font-semibold hover:scale-110 transition-transform">
-        Follow Tanay
-    </button>
-
-    <p class="text-slate-500 text-sm">Responsive • Interactive • Clean</p>
+    <main class="flex flex-col items-center justify-center text-center py-20 px-4">
+        <h1 class="text-4xl md:text-6xl font-black max-w-3xl leading-tight">
+            Mastering <span class="text-blue-500">Flexbox</span> Layouts
+        </h1>
+        <p class="text-slate-400 mt-6 max-w-xl text-lg">
+            Day 3: Learning how to align items horizontally in the Nav and vertically in the Hero.
+        </p>
+        <div class="mt-10 flex gap-4">
+            <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-slate-200">Get Started</button>
+            <button class="border border-slate-700 px-8 py-3 rounded-full font-bold hover:bg-slate-900">Learn More</button>
+        </div>
+    </main>
 
 </body>
 </html>
