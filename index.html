@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Day 3 | Layout Mastery</title>
+    <title>Day 4 | Bento Grid</title>
 </head>
-<body class="bg-slate-950 text-white font-sans">
+<body class="bg-slate-950 p-10">
 
-    <nav class="flex justify-between items-center px-8 py-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0">
-        <div class="text-xl font-bold tracking-tighter">TANAY<span class="text-blue-500">.CODES</span></div>
+    <h1 class="text-white text-3xl font-bold mb-8">Day 4: Bento Layout</h1>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <div class="hidden md:flex gap-8 text-slate-400">
-            <a href="#" class="hover:text-white transition-colors">Home</a>
-            <a href="#" class="hover:text-white transition-colors">Projects</a>
+        <div class="md:col-span-2 bg-blue-600 rounded-3xl p-8 h-64 flex flex-col justify-end text-white">
+            <h2 class="text-2xl font-bold">Project Alpha</h2>
         </div>
 
-        <button class="bg-blue-600 px-5 py-2 rounded-lg font-bold text-sm hover:bg-blue-500 transition-all">
-            Hire Me
-        </button>
-    </nav>
-
-    <main class="flex flex-col items-center justify-center text-center py-20 px-4">
-        <h1 class="text-4xl md:text-6xl font-black max-w-3xl leading-tight">
-            Mastering <span class="text-blue-500">Flexbox</span> Layouts
-        </h1>
-        <p class="text-slate-400 mt-6 max-w-xl text-lg">
-            Day 3: Learning how to align items horizontally in the Nav and vertically in the Hero.
-        </p>
-        <div class="mt-10 flex gap-4">
-            <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-slate-200">Get Started</button>
-            <button class="border border-slate-700 px-8 py-3 rounded-full font-bold hover:bg-slate-900">Learn More</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 h-64 text-white">
+            <h2 class="text-xl font-bold">Stats</h2>
         </div>
-    </main>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 h-64 text-white">
+            <h2 class="text-xl font-bold">Users</h2>
+        </div>
+
+        <div class="md:col-span-2 bg-emerald-500 rounded-3xl p-8 h-64">
+            <h2 class="text-2xl font-bold text-black">Performance</h2>
+        </div>
+
+    </section>
 
 </body>
 </html>
