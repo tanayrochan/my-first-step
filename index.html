@@ -1,28 +1,19 @@
-<div class="bg-black min-h-screen flex items-center justify-center p-6">
-  <div class="bg-zinc-900 border border-zinc-800 p-10 rounded-[40px] w-full max-w-sm text-center">
-    <h1 id="num" class="text-white text-3xl font-black mb-6 uppercase">Color Magic</h1>
-    <input id="userName" type="text" placeholder="Enter name..." class="w-full p-4 rounded-2xl bg-zinc-800 text-white border border-zinc-700 mb-4 outline-none">
-    <button id="btn" class="w-full py-4 bg-white text-black font-black rounded-2xl active:scale-95 uppercase">Generate Style</button>
-  </div>
+<div>
+  <h1 id="msg">Hello!</h1>
+  <input id="nameBox" type="text" placeholder="Your name">
+  <button id="goBtn">Change Name</button>
+// 1. Find the things
+const myButton = document.getElementById('goBtn');
+const myInput = document.getElementById('nameBox');
+const myTitle = document.getElementById('msg');
 
-const btn = document.getElementById('btn');
-const text = document.getElementById('num');
-const nameInput = document.getElementById('userName');
-
-btn.onclick = function() {
-    const name = nameInput.value;
-    
-    // Create a random color
-    const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-    
-    if (name === "") {
-        text.innerText = "Enter a name!";
-        text.style.color = "red";
-    } else {
-        text.innerText = "Style for " + name;
-        text.style.color = randomColor;
-        btn.style.backgroundColor = randomColor;
-    }
+// 2. When button is clicked...
+myButton.onclick = function() {
+  
+  // Grab the text from the box
+  let userText = myInput.value;
+  
+  // Put that text into the title
+  myTitle.innerText = "Welcome, " + userText;
 };
 </div>
-
