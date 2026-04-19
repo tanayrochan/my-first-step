@@ -1,46 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Day 11: Simple Toggle</title>
-    <style>
-        body { 
-            background-color: #121212; 
-            color: white; 
-            font-family: sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            margin: 0;
-        }
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 10px;
-            border: none;
-            background-color: #3b82f6;
-            color: white;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 12: Proper JS Logic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center font-sans">
 
-    <h1 id="msg">The Room is Dark</h1>
-    <button id="btn">Turn on Light</button>
+    <div class="text-center p-10 bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl">
+        <h1 id="heading" class="text-zinc-500 text-4xl font-black mb-6 uppercase tracking-widest transition-all duration-500">
+            System Locked
+        </h1>
+        
+        <button id="unlockBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+            IDENTITY VERIFY
+        </button>
+    </div>
 
     <script>
-        // Simple 3-line brain
-        const myButton = document.getElementById('btn');
-        const myTitle = document.getElementById('msg');
+        const button = document.getElementById('unlockBtn');
+        const title = document.getElementById('heading');
+        button.addEventListener('click', function() {
+            
+            title.innerText = "Access Granted";
+            
+            title.classList.replace('text-zinc-500', 'text-emerald-400');
+            title.classList.add('scale-110');
 
-        myButton.onclick = function() {
-            document.body.style.backgroundColor = "white";
-            document.body.style.color = "black";
-            myTitle.innerText = "Light is ON! 💡";
-            myButton.innerText = "It Works!";
-        };
+            button.innerText = "WELCOME USER";
+            button.classList.replace('bg-indigo-600', 'bg-emerald-600');
+            button.classList.add('shadow-emerald-500/40');
+        });
     </script>
 
 </body>
