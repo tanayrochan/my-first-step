@@ -1,38 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 12: Proper JS Logic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 12: Logic & Memory</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center font-sans">
+<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-center font-sans">
 
-    <div class="text-center p-10 bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl">
-        <h1 id="heading" class="text-zinc-500 text-4xl font-black mb-6 uppercase tracking-widest transition-all duration-500">
-            System Locked
-        </h1>
+  <div class="text-center p-12 bg-slate-900 border border-slate-800 rounded-[3rem] shadow-2xl">
+    <h1 id="headline" class="text-white text-5xl font-black mb-8 uppercase tracking-tighter transition-all duration-500">
+      System Ready
+    </h1>
+
+    <button id="mainBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-12 py-5 rounded-2xl font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-blue-500/20">
+      EXECUTE
+    </button>
+    
+    <p class="text-slate-500 mt-6 font-mono text-sm italic">Logic Status: Operational</p>
+  </div>
+
+  <script>
+    // 1. Grab the elements from the page
+    const btn = document.getElementById('mainBtn');
+    const text = document.getElementById('headline');
+
+    // 2. State Variable (The computer's "Memory")
+    let isSystemOn = false;
+
+    // 3. The Event Listener (The proper "Regular JS" way)
+    btn.addEventListener('click', function() {
+      
+      if (isSystemOn === false) {
+        // --- ACTION: TURN SYSTEM ON ---
+        text.innerText = "SYSTEM ONLINE";
+        text.classList.replace('text-white', 'text-emerald-400');
+        text.classList.add('scale-110');
         
-        <button id="unlockBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
-            IDENTITY VERIFY
-        </button>
-    </div>
-
-    <script>
-        const button = document.getElementById('unlockBtn');
-        const title = document.getElementById('heading');
-        button.addEventListener('click', function() {
-            
-            title.innerText = "Access Granted";
-            
-            title.classList.replace('text-zinc-500', 'text-emerald-400');
-            title.classList.add('scale-110');
-
-            button.innerText = "WELCOME USER";
-            button.classList.replace('bg-indigo-600', 'bg-emerald-600');
-            button.classList.add('shadow-emerald-500/40');
-        });
-    </script>
+        btn.innerText = "SHUTDOWN";
+        btn.classList.replace('bg-blue-600', 'bg-red-600');
+        
+        isSystemOn = true; // Update memory to say it is ON
+      } else {
+        // --- ACTION: TURN SYSTEM OFF ---
+        text.innerText = "SYSTEM OFFLINE";
+        text.classList.replace('text-emerald-400', 'text-white');
+        text.classList.remove('scale-110');
+        
+        btn.innerText = "BOOT UP";
+        btn.classList.replace('bg-red-600', 'bg-blue-600');
+        
+        isSystemOn = false; // Update memory to say it is OFF
+      }
+      
+    });
+  </script>
 
 </body>
 </html>
