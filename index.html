@@ -3,54 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 12: Logic & Memory</title>
+  <title>Day 13: User Input</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-center font-sans">
+<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center p-4">
 
-  <div class="text-center p-12 bg-slate-900 border border-slate-800 rounded-[3rem] shadow-2xl">
-    <h1 id="headline" class="text-white text-5xl font-black mb-8 uppercase tracking-tighter transition-all duration-500">
-      System Ready
+  <div class="bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-800 shadow-2xl w-full max-w-md text-center">
+    
+    <h1 id="display" class="text-white text-3xl font-black mb-8 transition-all duration-300">
+      Who are you?
     </h1>
 
-    <button id="mainBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-12 py-5 rounded-2xl font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-blue-500/20">
-      EXECUTE
+    <input 
+      type="text" 
+      id="userName" 
+      placeholder="Enter your name..." 
+      class="w-full bg-zinc-800 border border-zinc-700 text-white p-4 rounded-xl mb-6 outline-none focus:border-blue-500 transition-colors"
+    >
+
+    <button id="greetBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl active:scale-95 transition-all">
+      INITIALIZE GREETING
     </button>
-    
-    <p class="text-slate-500 mt-6 font-mono text-sm italic">Logic Status: Operational</p>
+
   </div>
 
   <script>
-    // 1. Grab the elements from the page
-    const btn = document.getElementById('mainBtn');
-    const text = document.getElementById('headline');
+    // 1. Get the elements
+    const output = document.getElementById('display');
+    const inputField = document.getElementById('userName');
+    const btn = document.getElementById('greetBtn');
 
-    // 2. State Variable (The computer's "Memory")
-    let isSystemOn = false;
-
-    // 3. The Event Listener (The proper "Regular JS" way)
+    // 2. The Logic
     btn.addEventListener('click', function() {
       
-      if (isSystemOn === false) {
-        // --- ACTION: TURN SYSTEM ON ---
-        text.innerText = "SYSTEM ONLINE";
-        text.classList.replace('text-white', 'text-emerald-400');
-        text.classList.add('scale-110');
-        
-        btn.innerText = "SHUTDOWN";
-        btn.classList.replace('bg-blue-600', 'bg-red-600');
-        
-        isSystemOn = true; // Update memory to say it is ON
+      // Get the current text inside the input box
+      const name = inputField.value;
+
+      if (name === "") {
+        // If they didn't type anything
+        output.innerText = "Please enter a name!";
+        output.classList.add('text-red-500');
       } else {
-        // --- ACTION: TURN SYSTEM OFF ---
-        text.innerText = "SYSTEM OFFLINE";
-        text.classList.replace('text-emerald-400', 'text-white');
-        text.classList.remove('scale-110');
+        // Success!
+        output.innerText = "Hello, " + name + "!";
+        output.classList.remove('text-red-500');
+        output.classList.add('text-blue-400', 'scale-110');
         
-        btn.innerText = "BOOT UP";
-        btn.classList.replace('bg-red-600', 'bg-blue-600');
-        
-        isSystemOn = false; // Update memory to say it is OFF
+        // Clear the input box so they can type again
+        inputField.value = "";
       }
       
     });
