@@ -3,58 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 13: User Input</title>
+  <title>Day 14: The Calculation Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-center p-4">
 
-  <div class="bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-800 shadow-2xl w-full max-w-md text-center">
+  <div class="bg-slate-900 p-10 rounded-[3rem] border border-slate-800 shadow-2xl w-full max-w-sm text-center">
     
-    <h1 id="display" class="text-white text-3xl font-black mb-8 transition-all duration-300">
-      Who are you?
-    </h1>
+    <h1 class="text-slate-500 font-black text-xs tracking-[0.4em] uppercase mb-4">Calculation Engine</h1>
+    
+    <div class="bg-black/30 py-8 rounded-3xl mb-8 border border-white/5">
+        <h2 id="resultDisplay" class="text-white text-6xl font-black transition-all duration-200">0</h2>
+    </div>
 
     <input 
-      type="text" 
-      id="userName" 
-      placeholder="Enter your name..." 
-      class="w-full bg-zinc-800 border border-zinc-700 text-white p-4 rounded-xl mb-6 outline-none focus:border-blue-500 transition-colors"
+      type="number" 
+      id="numInput" 
+      placeholder="Enter value..." 
+      class="w-full bg-slate-800 border border-slate-700 text-white p-5 rounded-2xl mb-6 outline-none focus:ring-2 focus:ring-indigo-500 text-center text-2xl font-bold transition-all"
     >
 
-    <button id="greetBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl active:scale-95 transition-all">
-      INITIALIZE GREETING
-    </button>
+    <div class="grid grid-cols-2 gap-4">
+        <button id="doubleBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl active:scale-90 transition-all shadow-lg shadow-indigo-500/20">
+            X 2
+        </button>
+        <button id="tripleBtn" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-black py-4 rounded-2xl active:scale-90 transition-all shadow-lg shadow-fuchsia-500/20">
+            X 10
+        </button>
+    </div>
+
+    <p id="status" class="text-slate-600 mt-6 text-xs font-mono uppercase tracking-widest">System Ready</p>
 
   </div>
 
   <script>
-    // 1. Get the elements
-    const output = document.getElementById('display');
-    const inputField = document.getElementById('userName');
-    const btn = document.getElementById('greetBtn');
+    const display = document.getElementById('resultDisplay');
+    const input = document.getElementById('numInput');
+    const btn2 = document.getElementById('doubleBtn');
+    const btn10 = document.getElementById('tripleBtn');
+    const statusText = document.getElementById('status');
 
-    // 2. The Logic
-    btn.addEventListener('click', function() {
-      
-      // Get the current text inside the input box
-      const name = inputField.value;
+    // Helper function to animate the "Pop"
+    function animatePop(colorClass) {
+        display.classList.add('scale-110', colorClass);
+        setTimeout(() => {
+            display.classList.remove('scale-110', colorClass);
+        }, 200);
+    }
 
-      if (name === "") {
-        // If they didn't type anything
-        output.innerText = "Please enter a name!";
-        output.classList.add('text-red-500');
-      } else {
-        // Success!
-        output.innerText = "Hello, " + name + "!";
-        output.classList.remove('text-red-500');
-        output.classList.add('text-blue-400', 'scale-110');
+    // Logic for Double (x2)
+    btn2.addEventListener('click', function() {
+        const val = Number(input.value);
+        const result = val * 2;
         
-        // Clear the input box so they can type again
-        inputField.value = "";
-      }
-      
+        display.innerText = result;
+        statusText.innerText = "Multiplied by 2";
+        animatePop('text-indigo-400');
+    });
+
+    // Logic for Decade (x10)
+    btn10.addEventListener('click', function() {
+        const val = Number(input.value);
+        const result = val * 10;
+        
+        display.innerText = result;
+        statusText.innerText = "Multiplied by 10";
+        animatePop('text-fuchsia-400');
     });
   </script>
 
 </body>
 </html>
+
+
