@@ -3,76 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 14: The Calculation Engine</title>
+  <title>Day 15: The Mystery Game</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-black min-h-screen flex flex-col items-center justify-center p-4">
 
-  <div class="bg-slate-900 p-10 rounded-[3rem] border border-slate-800 shadow-2xl w-full max-w-sm text-center">
+  <div class="bg-zinc-900 p-10 rounded-[3rem] border-2 border-zinc-800 shadow-2xl w-full max-w-sm text-center">
     
-    <h1 class="text-slate-500 font-black text-xs tracking-[0.4em] uppercase mb-4">Calculation Engine</h1>
+    <h1 class="text-zinc-500 font-black text-xs tracking-[0.5em] uppercase mb-4">Neural Scanner</h1>
     
-    <div class="bg-black/30 py-8 rounded-3xl mb-8 border border-white/5">
-        <h2 id="resultDisplay" class="text-white text-6xl font-black transition-all duration-200">0</h2>
+    <div class="mb-8">
+        <h2 id="message" class="text-white text-2xl font-bold min-h-[60px] flex items-center justify-center transition-all duration-300">
+            Guess a number (1-10)
+        </h2>
     </div>
 
     <input 
       type="number" 
-      id="numInput" 
-      placeholder="Enter value..." 
-      class="w-full bg-slate-800 border border-slate-700 text-white p-5 rounded-2xl mb-6 outline-none focus:ring-2 focus:ring-indigo-500 text-center text-2xl font-bold transition-all"
+      id="guessInput" 
+      placeholder="?" 
+      class="w-32 bg-black border-2 border-zinc-700 text-white p-6 rounded-3xl mb-8 outline-none focus:border-yellow-500 text-center text-4xl font-black transition-all"
     >
 
-    <div class="grid grid-cols-2 gap-4">
-        <button id="doubleBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl active:scale-90 transition-all shadow-lg shadow-indigo-500/20">
-            X 2
-        </button>
-        <button id="tripleBtn" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-black py-4 rounded-2xl active:scale-90 transition-all shadow-lg shadow-fuchsia-500/20">
-            X 10
-        </button>
-    </div>
+    <button id="checkBtn" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-5 rounded-2xl active:scale-95 transition-all uppercase tracking-tighter text-xl">
+        Verify Guess
+    </button>
 
-    <p id="status" class="text-slate-600 mt-6 text-xs font-mono uppercase tracking-widest">System Ready</p>
+    <button id="resetBtn" class="mt-6 text-zinc-500 hover:text-white underline text-sm hidden">
+        Play Again?
+    </button>
 
   </div>
 
   <script>
-    const display = document.getElementById('resultDisplay');
-    const input = document.getElementById('numInput');
-    const btn2 = document.getElementById('doubleBtn');
-    const btn10 = document.getElementById('tripleBtn');
-    const statusText = document.getElementById('status');
+    // 1. Setup the Secret Number (1 to 10)
+    let secretNumber = Math.floor(Math.random() * 10) + 1;
 
-    // Helper function to animate the "Pop"
-    function animatePop(colorClass) {
-        display.classList.add('scale-110', colorClass);
-        setTimeout(() => {
-            display.classList.remove('scale-110', colorClass);
-        }, 200);
-    }
+    // 2. Get the elements
+    const msg = document.getElementById('message');
+    const input = document.getElementById('guessInput');
+    const btn = document.getElementById('checkBtn');
+    const reset = document.getElementById('resetBtn');
 
-    // Logic for Double (x2)
-    btn2.addEventListener('click', function() {
-        const val = Number(input.value);
-        const result = val * 2;
-        
-        display.innerText = result;
-        statusText.innerText = "Multiplied by 2";
-        animatePop('text-indigo-400');
+    // 3. Game Logic
+    btn.addEventListener('click', function() {
+        const userGuess = Number(input.value);
+
+        if (userGuess === secretNumber) {
+            // WINNER!
+            msg.innerText = "🎯 CORRECT! ACCESS GRANTED";
+            msg.classList.replace('text-white', 'text-yellow-500');
+            btn.classList.add('hidden');
+            reset.classList.remove('hidden');
+        } else if (userGuess > secretNumber) {
+            // TOO HIGH
+            msg.innerText = "LOWER...";
+            msg.classList.add('text-red-400');
+            setTimeout(() => msg.classList.remove('text-red-400'), 500);
+        } else {
+            // TOO LOW
+            msg.innerText = "HIGHER...";
+            msg.classList.add('text-blue-400');
+            setTimeout(() => msg.classList.remove('text-blue-400'), 500);
+        }
+
+        input.value = ""; // Clear input for next try
     });
 
-    // Logic for Decade (x10)
-    btn10.addEventListener('click', function() {
-        const val = Number(input.value);
-        const result = val * 10;
-        
-        display.innerText = result;
-        statusText.innerText = "Multiplied by 10";
-        animatePop('text-fuchsia-400');
+    // 4. Reset Logic
+    reset.addEventListener('click', function() {
+        secretNumber = Math.floor(Math.random() * 10) + 1; // Pick new number
+        msg.innerText = "Guess a number (1-10)";
+        msg.classList.replace('text-yellow-500', 'text-white');
+        btn.classList.remove('hidden');
+        reset.classList.add('hidden');
     });
   </script>
 
 </body>
 </html>
+
+
 
 
