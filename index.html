@@ -3,59 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 16: Array Power</title>
+  <title>Day 17: The Beast Factory</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-start p-10 font-sans">
 
-  <div class="bg-zinc-900 p-10 rounded-[3rem] border border-zinc-800 shadow-2xl w-full max-w-sm text-center">
-    
-    <h1 class="text-indigo-500 font-black text-xs tracking-[0.4em] uppercase mb-4">Vibe Selector</h1>
-    
-    <div class="bg-black/40 py-12 px-4 rounded-3xl mb-8 border border-white/5 min-h-[160px] flex items-center justify-center">
-        <h2 id="vibeDisplay" class="text-white text-3xl font-bold transition-all duration-500">
-            Ready?
-        </h2>
+  <div class="w-full max-w-md text-center">
+    <h1 class="text-emerald-500 font-black text-xs tracking-[0.5em] uppercase mb-2">Automated Factory</h1>
+    <h2 class="text-white text-3xl font-bold mb-10">Skill Inventory</h2>
+
+    <div id="listContainer" class="flex flex-wrap justify-center gap-3 min-h-[100px] p-6 bg-zinc-900/50 rounded-3xl border border-zinc-800">
+        <p id="placeholder" class="text-zinc-600 italic">Storage Empty...</p>
     </div>
 
-    <button id="genBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-5 rounded-2xl active:scale-90 transition-all shadow-lg shadow-indigo-500/20">
-        GENERATE VIBE
+    <button id="loadBtn" class="mt-12 bg-emerald-600 hover:bg-emerald-500 text-white px-10 py-4 rounded-2xl font-black tracking-widest transition-all active:scale-90 shadow-lg shadow-emerald-600/20">
+        LOAD DATA
     </button>
-
   </div>
 
   <script>
-    // 1. THE ARRAY (Our list of items)
-    const vibes = [
-        "Stay Focused", 
-        "Keep Grinding", 
-        "Take a Break", 
-        "Code All Night", 
-        "Drink More Water",
-        "Think Bigger",
-        "Trust the Process"
+    // 1. THE DATA (The Bricks)
+    const skills = [
+        "JavaScript", "Tailwind", "HTML5", 
+        "Logic", "Loops", "Arrays", 
+        "DOM", "Beast Mode", "Persistence"
     ];
 
-    const display = document.getElementById('vibeDisplay');
-    const btn = document.getElementById('genBtn');
+    const container = document.getElementById('listContainer');
+    const btn = document.getElementById('loadBtn');
+    const placeholder = document.getElementById('placeholder');
 
     btn.addEventListener('click', function() {
         
-        // 2. Logic to pick a random index from the array
-        // vibes.length tells us how many items are in the list
-        const randomIndex = Math.floor(Math.random() * vibes.length);
-        
-        // 3. Get the item using the random number
-        const selectedVibe = vibes[randomIndex];
+        // Step A: Clear the "Storage Empty" text and any old items
+        container.innerHTML = "";
 
-        // 4. Update the screen
-        display.innerText = selectedVibe;
+        // Step B: The Factory Line (Loop)
+        skills.forEach(function(skillName) {
+            
+            // 1. Build the Box
+            const badge = document.createElement('div');
+            
+            // 2. Sticker/Paint the Box
+            badge.className = "bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 px-5 py-2 rounded-xl font-mono text-sm font-bold shadow-sm hover:bg-emerald-500/20 transition-colors cursor-default";
+            
+            // 3. Fill the Box
+            badge.innerText = skillName;
+            
+            // 4. Ship it to the Screen
+            container.appendChild(badge);
+        });
+
+        // Step C: Update Button Feedback
+        btn.innerText = "RELOAD FACTORY";
+        btn.classList.replace('bg-emerald-600', 'bg-zinc-800');
         
-        // Visual flair
-        display.classList.add('scale-110', 'text-indigo-400');
-        setTimeout(() => {
-            display.classList.remove('scale-110', 'text-indigo-400');
-        }, 300);
+        console.log("Factory produced " + skills.length + " items.");
     });
   </script>
 
