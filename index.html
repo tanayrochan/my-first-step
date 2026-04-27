@@ -3,67 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 17: The Beast Factory</title>
+  <title>Day 18: Objects & Profiles</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-start p-10 font-sans">
 
-  <div class="w-full max-w-md text-center">
-    <h1 class="text-emerald-500 font-black text-xs tracking-[0.5em] uppercase mb-2">Automated Factory</h1>
-    <h2 class="text-white text-3xl font-bold mb-10">Skill Inventory</h2>
+  <div class="w-full max-w-2xl text-center">
+    <h1 class="text-indigo-500 font-black text-xs tracking-[0.5em] uppercase mb-2">Advanced Data</h1>
+    <h2 class="text-white text-3xl font-bold mb-10">Skill Profiles</h2>
 
-    <div id="listContainer" class="flex flex-wrap justify-center gap-3 min-h-[100px] p-6 bg-zinc-900/50 rounded-3xl border border-zinc-800">
-        <p id="placeholder" class="text-zinc-600 italic">Storage Empty...</p>
-    </div>
+    <div id="cardContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+        </div>
 
-    <button id="loadBtn" class="mt-12 bg-emerald-600 hover:bg-emerald-500 text-white px-10 py-4 rounded-2xl font-black tracking-widest transition-all active:scale-90 shadow-lg shadow-emerald-600/20">
-        LOAD DATA
+    <button id="loadBtn" class="mt-12 bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-4 rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
+        GENERATE PROFILES
     </button>
   </div>
 
   <script>
-    // 1. THE DATA (The Bricks)
-    const skills = [
-        "JavaScript", "Tailwind", "HTML5", 
-        "Logic", "Loops", "Arrays", 
-        "DOM", "Beast Mode", "Persistence"
+    // 1. DATA: An Array of Objects
+    const skillProfiles = [
+        { name: "JavaScript", level: "Master", color: "border-yellow-500", text: "text-yellow-500" },
+        { name: "Tailwind CSS", level: "Pro", color: "border-cyan-400", text: "text-cyan-400" },
+        { name: "Logic & Math", level: "Advanced", color: "border-purple-500", text: "text-purple-500" },
+        { name: "Beast Mode", level: "Max", color: "border-red-500", text: "text-red-500" }
     ];
 
-    const container = document.getElementById('listContainer');
+    const container = document.getElementById('cardContainer');
     const btn = document.getElementById('loadBtn');
-    const placeholder = document.getElementById('placeholder');
 
     btn.addEventListener('click', function() {
-        
-        // Step A: Clear the "Storage Empty" text and any old items
+        // Clear container
         container.innerHTML = "";
 
-        // Step B: The Factory Line (Loop)
-        skills.forEach(function(skillName) {
+        // 2. THE LOOP
+        skillProfiles.forEach(function(profile) {
             
-            // 1. Build the Box
-            const badge = document.createElement('div');
+            // Build the card
+            const card = document.createElement('div');
             
-            // 2. Sticker/Paint the Box
-            badge.className = "bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 px-5 py-2 rounded-xl font-mono text-sm font-bold shadow-sm hover:bg-emerald-500/20 transition-colors cursor-default";
+            // Use the object's color property to style the border!
+            card.className = `bg-zinc-900 p-6 rounded-3xl border-2 ${profile.color} shadow-xl transform transition-all hover:-translate-y-2`;
+
+            // Build the internal HTML using "Template Literals" (Backticks ``)
+            card.innerHTML = `
+                <h3 class="text-xs font-black uppercase tracking-widest text-zinc-500 mb-1">Skill Name</h3>
+                <p class="text-2xl font-bold text-white mb-4">${profile.name}</p>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-current ${profile.text}"></span>
+                    <span class="${profile.text} font-mono text-sm uppercase font-bold">${profile.level}</span>
+                </div>
+            `;
             
-            // 3. Fill the Box
-            badge.innerText = skillName;
-            
-            // 4. Ship it to the Screen
-            container.appendChild(badge);
+            container.appendChild(card);
         });
 
-        // Step C: Update Button Feedback
-        btn.innerText = "RELOAD FACTORY";
-        btn.classList.replace('bg-emerald-600', 'bg-zinc-800');
-        
-        console.log("Factory produced " + skills.length + " items.");
+        btn.innerText = "REFRESH PROFILES";
     });
   </script>
 
 </body>
 </html>
-
 
 
