@@ -3,66 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 18: Objects & Profiles</title>
+  <title>Day 19: Data Filtering</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-start p-10 font-sans">
+<body class="bg-stone-950 min-h-screen flex flex-col items-center p-10 font-sans text-stone-200">
 
-  <div class="w-full max-w-2xl text-center">
-    <h1 class="text-indigo-500 font-black text-xs tracking-[0.5em] uppercase mb-2">Advanced Data</h1>
-    <h2 class="text-white text-3xl font-bold mb-10">Skill Profiles</h2>
-
-    <div id="cardContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+  <div class="w-full max-w-3xl">
+    <header class="flex justify-between items-center mb-10 border-b border-stone-800 pb-6">
+        <div>
+            <h1 class="text-3xl font-black tracking-tighter text-white">BEAST GEAR</h1>
+            <p class="text-stone-500 text-sm">Inventory Management System</p>
         </div>
+        
+        <div class="flex gap-2">
+            <button id="showAll" class="bg-stone-800 hover:bg-stone-700 px-4 py-2 rounded-lg text-xs font-bold transition-all">SHOW ALL</button>
+            <button id="showPremium" class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-lg text-xs font-bold text-black transition-all">PREMIUM ONLY</button>
+        </div>
+    </header>
 
-    <button id="loadBtn" class="mt-12 bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-4 rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
-        GENERATE PROFILES
-    </button>
+    <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        </div>
   </div>
 
   <script>
-    // 1. DATA: An Array of Objects
-    const skillProfiles = [
-        { name: "JavaScript", level: "Master", color: "border-yellow-500", text: "text-yellow-500" },
-        { name: "Tailwind CSS", level: "Pro", color: "border-cyan-400", text: "text-cyan-400" },
-        { name: "Logic & Math", level: "Advanced", color: "border-purple-500", text: "text-purple-500" },
-        { name: "Beast Mode", level: "Max", color: "border-red-500", text: "text-red-500" }
+    // 1. DATA: Our Product List
+    const products = [
+        { name: "Alpha Watch", price: 299, type: "Premium" },
+        { name: "Basic Tee", price: 25, type: "Standard" },
+        { name: "Neural Link", price: 850, type: "Premium" },
+        { name: "Power Bank", price: 45, type: "Standard" },
+        { name: "Stealth Hoody", price: 120, type: "Premium" }
     ];
 
-    const container = document.getElementById('cardContainer');
-    const btn = document.getElementById('loadBtn');
+    const gallery = document.getElementById('gallery');
+    const allBtn = document.getElementById('showAll');
+    const premiumBtn = document.getElementById('showPremium');
 
-    btn.addEventListener('click', function() {
-        // Clear container
-        container.innerHTML = "";
+    // 2. THE RENDER FUNCTION (The Factory)
+    // We put the loop inside a function so we can call it whenever we want!
+    function displayProducts(itemsToDisplay) {
+        gallery.innerHTML = ""; // Clear current view
 
-        // 2. THE LOOP
-        skillProfiles.forEach(function(profile) {
-            
-            // Build the card
+        itemsToDisplay.forEach(function(product) {
             const card = document.createElement('div');
+            card.className = "bg-stone-900 border border-stone-800 p-6 rounded-2xl flex justify-between items-center group hover:border-stone-600 transition-all";
             
-            // Use the object's color property to style the border!
-            card.className = `bg-zinc-900 p-6 rounded-3xl border-2 ${profile.color} shadow-xl transform transition-all hover:-translate-y-2`;
+            // Logic for a "Premium" badge
+            const badge = product.type === "Premium" ? `<span class="text-[10px] bg-amber-500/10 text-amber-500 px-2 py-1 rounded-md font-black uppercase">Premium</span>` : "";
 
-            // Build the internal HTML using "Template Literals" (Backticks ``)
             card.innerHTML = `
-                <h3 class="text-xs font-black uppercase tracking-widest text-zinc-500 mb-1">Skill Name</h3>
-                <p class="text-2xl font-bold text-white mb-4">${profile.name}</p>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-current ${profile.text}"></span>
-                    <span class="${profile.text} font-mono text-sm uppercase font-bold">${profile.level}</span>
+                <div>
+                    ${badge}
+                    <h3 class="text-lg font-bold text-white mt-1">${product.name}</h3>
+                </div>
+                <div class="text-right">
+                    <p class="text-stone-500 text-xs">PRICE</p>
+                    <p class="text-xl font-mono text-stone-200">$${product.price}</p>
                 </div>
             `;
-            
-            container.appendChild(card);
+            gallery.appendChild(card);
         });
+    }
 
-        btn.innerText = "REFRESH PROFILES";
+    // 3. THE LOGIC (The Filters)
+    
+    // Show everything at the start
+    displayProducts(products);
+
+    // Filter for Premium
+    premiumBtn.addEventListener('click', function() {
+        // .filter is a new magic trick! It creates a sub-list
+        const filteredList = products.filter(function(p) {
+            return p.type === "Premium";
+        });
+        displayProducts(filteredList);
     });
+
+    // Show All again
+    allBtn.addEventListener('click', function() {
+        displayProducts(products);
+    });
+
   </script>
 
 </body>
 </html>
-
 
