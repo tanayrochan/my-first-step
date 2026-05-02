@@ -3,82 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 20: Persistent Memory</title>
+  <title>Day 21: The Outside World</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-start pt-20 font-sans text-slate-200">
+<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center p-6 font-sans text-zinc-300">
 
-  <div class="w-full max-w-md bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 shadow-2xl">
-    <h1 class="text-2xl font-black mb-6 text-white flex items-center gap-3">
-        <span class="w-3 h-8 bg-indigo-500 rounded-full"></span>
-        MEMORY BANK
-    </h1>
+  <div class="w-full max-w-md bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl text-center">
+    <h1 class="text-xs font-black tracking-[0.4em] text-indigo-500 uppercase mb-6">Live API Connection</h1>
 
-    <div class="flex gap-2 mb-8">
-        <input 
-            type="text" 
-            id="taskInput" 
-            placeholder="Store a thought..." 
-            class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition-all text-sm"
-        >
-        <button id="saveBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold transition-all active:scale-95">
-            SAVE
-        </button>
+    <div class="bg-black/40 p-8 rounded-3xl mb-8 border border-white/5 min-h-[140px] flex items-center justify-center">
+        <p id="adviceDisplay" class="text-white text-lg font-medium leading-relaxed">
+            Click the button to fetch advice from the web...
+        </p>
     </div>
 
-    <div id="displayBox" class="space-y-3">
-        </div>
-
-    <button id="clearBtn" class="mt-8 text-slate-500 hover:text-red-400 text-xs uppercase tracking-widest font-bold transition-colors w-full">
-        Wipe Memory
+    <button id="fetchBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
+        GET LIVE ADVICE
     </button>
+
+    <p class="text-zinc-600 text-[10px] font-mono mt-6 tracking-wider uppercase">API Source: api.adviceslip.com</p>
   </div>
 
   <script>
-    const input = document.getElementById('taskInput');
-    const saveBtn = document.getElementById('saveBtn');
-    const displayBox = document.getElementById('displayBox');
-    const clearBtn = document.getElementById('clearBtn');
+    const btn = document.getElementById('fetchBtn');
+    const display = document.getElementById('adviceDisplay');
 
-    // 1. THE LOAD FUNCTION (Runs on startup)
-    function loadMemory() {
-        // Grab data from LocalStorage using the key 'userNote'
-        const savedData = localStorage.getItem('userNote');
+    // 1. THE FETCH LOGIC
+    btn.addEventListener('click', function() {
+        // Change button state during fetch
+        btn.innerText = "CONNECTING...";
+        btn.disabled = true;
 
-        if (savedData) {
-            displayBox.innerHTML = `
-                <div class="bg-indigo-500/10 border border-indigo-500/30 p-4 rounded-2xl">
-                    <p class="text-xs text-indigo-400 font-black uppercase mb-1">Stored Content:</p>
-                    <p class="text-white font-medium">${savedData}</p>
-                </div>
-            `;
-        } else {
-            displayBox.innerHTML = `<p class="text-slate-600 italic text-center">No data in memory.</p>`;
-        }
-    }
+        // The endpoint we are fetching data from
+        const API_URL = "https://api.adviceslip.com/advice";
 
-    // Run load function immediately when page starts
-    loadMemory();
+        fetch(API_URL)
+            .then(function(response) {
+                // Convert the raw data to JSON (JavaScript Object Notation)
+                return response.json();
+            })
+            .then(function(data) {
+                // Extract the advice text from the data
+                const adviceText = data.slip.advice;
+                
+                // Display it on the screen
+                display.innerText = `"${adviceText}"`;
 
-    // 2. THE SAVE LOGIC
-    saveBtn.addEventListener('click', function() {
-        const textToSave = input.value;
-
-        if (textToSave !== "") {
-            // This line saves data into the browser's secret vault
-            localStorage.setItem('userNote', textToSave);
-            
-            input.value = ""; // Clear input
-            loadMemory();    // Refresh the display
-            alert("Saved to Browser Memory!");
-        }
-    });
-
-    // 3. THE WIPE LOGIC
-    clearBtn.addEventListener('click', function() {
-        localStorage.removeItem('userNote'); // Deletes only this key
-        // Or: localStorage.clear(); // Deletes EVERYTHING
-        loadMemory();
+                // Reset button
+                btn.innerText = "GET LIVE ADVICE";
+                btn.disabled = false;
+            })
+            .catch(function(error) {
+                display.innerText = "Error connecting to the network. Try again!";
+                btn.innerText = "GET LIVE ADVICE";
+                btn.disabled = false;
+            });
     });
   </script>
 
