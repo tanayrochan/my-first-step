@@ -1,57 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 21: updated version </title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center p-6 font-sans text-zinc-300">
+<body class="bg-zinc-950 min-h-screen flex flex-col items-center justify-center text-white">
 
-  <div class="w-full max-w-md bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl text-center">
-    <h1 class="text-xs font-black tracking-[0.4em] text-indigo-500 uppercase mb-6">Live API Connection</h1>
-
-    <div class="bg-black/40 p-8 rounded-3xl mb-8 border border-white/5 min-h-[140px] flex items-center justify-center">
-        <p id="adviceDisplay" class="text-white text-lg font-medium leading-relaxed">
-            Click the button to fetch advice from the web...
-        </p>
-    </div>
-
-    <button id="fetchBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
-        GET LIVE ADVICE
+  <div class="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 text-center max-w-sm w-full">
+    <button id="btn" class="bg-indigo-600 hover:bg-indigo-500 w-full p-4 rounded-xl font-bold transition-all">
+      Get Simple Advice
     </button>
-
-    <p class="text-zinc-600 text-[10px] font-mono mt-6 tracking-wider uppercase">API Source: api.adviceslip.com</p>
+    
+    <p id="output" class="mt-6 text-sm text-zinc-400 italic">Click the button to start...</p>
   </div>
 
   <script>
-    const btn = document.getElementById('fetchBtn');
-    const display = document.getElementById('adviceDisplay');
+    const btn = document.getElementById('btn');
+    const output = document.getElementById('output');
 
     btn.addEventListener('click', function() {
-        // Change button state during fetch
-        btn.innerText = "CONNECTING...";
-        btn.disabled = true;
-
-        const API_URL = "https://api.adviceslip.com/advice";
-
-        fetch(API_URL)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                const adviceText = data.slip.advice;
-                
-                display.innerText = `"${adviceText}"`;
-
-                btn.innerText = "GET LIVE ADVICE";
-                btn.disabled = false;
-            })
-            .catch(function(error) {
-                display.innerText = "Error connecting to the network. Try again!";
-                btn.innerText = "GET LIVE ADVICE";
-                btn.disabled = false;
-            });
+      // 1. Ask the server
+      fetch('https://api.adviceslip.com/advice')
+      
+        // 2. Receive raw response and convert to JSON
+        .then(function(response) {
+          return response.json();
+        })
+        
+        // 3. Use the data
+        .then(function(data) {
+          output.innerText = data.slip.advice;
+        });
     });
   </script>
 
