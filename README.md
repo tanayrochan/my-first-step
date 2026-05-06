@@ -1,3 +1,1 @@
-# My Tech Journey
-I just started learning GitHub today. This is my first ever edit!
-I am finally inside VS Code!
+learned tailwind css quite good and struggling through jawascript and bad situations at home but i dont ever give up
