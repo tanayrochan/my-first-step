@@ -3,52 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Fetch</title>
+  <title>Day 23: Global State</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black min-h-screen flex items-center justify-center p-6 font-mono">
+<body class="bg-zinc-950 min-h-screen flex items-center justify-center p-6 text-white font-sans">
 
-  <div class="w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl">
-    <div class="bg-zinc-800 px-4 py-2 flex gap-2 items-center">
-        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+  <div class="w-full max-w-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <div class="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 shadow-xl">
+        <h2 class="text-indigo-400 font-black text-xs uppercase tracking-widest mb-6">Settings</h2>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] text-zinc-500 uppercase font-bold">Display Name</label>
+                <input type="text" id="nameInput" class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 mt-1 focus:border-indigo-500 outline-none transition-all">
+            </div>
+            <div>
+                <label class="text-[10px] text-zinc-500 uppercase font-bold">Experience Level</label>
+                <select id="levelSelect" class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 mt-1 outline-none">
+                    <option value="Noob">Noob</option>
+                    <option value="Beast">Beast</option>
+                    <option value="God Mode">God Mode</option>
+                </select>
+            </div>
+        </div>
     </div>
 
-    <div class="p-8">
-        <p id="status" class="text-emerald-500 text-xs mb-4 uppercase tracking-widest">[ Status: Ready ]</p>
-        <p id="output" class="text-white text-xl font-bold min-h-[100px]"> > Initializing... </p>
-
-        <button id="btn" class="mt-10 w-full border border-emerald-500/50 hover:bg-emerald-500/10 text-emerald-500 py-3 rounded-md transition-all active:scale-95">
-            EXECUTE FETCH
-        </button>
+    <div id="profileCard" class="bg-indigo-600 p-8 rounded-[2rem] flex flex-col justify-between shadow-2xl shadow-indigo-500/20">
+        <div>
+            <div id="levelBadge" class="bg-white/20 w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 tracking-tighter">Noob</div>
+            <h1 id="displayName" class="text-3xl font-black italic">User_01</h1>
+        </div>
+        
+        <div class="mt-12">
+            <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest">Account Status</p>
+            <p class="font-mono text-sm">Active & Verified</p>
+        </div>
     </div>
+
   </div>
 
   <script>
-    const status = document.getElementById('status');
-    const output = document.getElementById('output');
-    const btn = document.getElementById('btn');
+    // 1. THE STATE (The Single Source of Truth)
+    // This object controls EVERYTHING you see on the right side.
+    let appState = {
+        userName: "User_01",
+        userLevel: "Noob"
+    };
 
-    async function getQuote() {
-        try {
-            btn.disabled = true;
-            status.innerText = "[ Status: Fetching... ]";
-            
-            const res = await fetch('https://api.adviceslip.com/advice');
-            const data = await res.json();
+    // 2. THE RENDERER (Updates the UI based on the State)
+    function renderUI() {
+        const nameDisplay = document.getElementById('displayName');
+        const levelBadge = document.getElementById('levelBadge');
+        const card = document.getElementById('profileCard');
 
-            output.innerText = `> "${data.slip.advice}"`;
-            status.innerText = "[ Status: Success ]";
-        } catch (err) {
-            output.innerText = "> ERROR: Connection failed.";
-            status.innerText = "[ Status: Failed ]";
-        } finally {
-            btn.disabled = false;
+        // Update Text
+        nameDisplay.innerText = appState.userName;
+        levelBadge.innerText = appState.userLevel;
+
+        // Update Style based on Level
+        if (appState.userLevel === "God Mode") {
+            card.classList.replace('bg-indigo-600', 'bg-orange-500');
+            levelBadge.classList.replace('bg-white/20', 'bg-black/20');
+        } else if (appState.userLevel === "Beast") {
+            card.classList.replace('bg-orange-500', 'bg-emerald-600');
+            card.classList.replace('bg-indigo-600', 'bg-emerald-600');
+        } else {
+            card.className = "bg-indigo-600 p-8 rounded-[2rem] flex flex-col justify-between shadow-2xl shadow-indigo-500/20 transition-all duration-500";
         }
     }
 
-    btn.onclick = getQuote;
+    // 3. THE EVENTS (Update the State, then re-render)
+    document.getElementById('nameInput').addEventListener('input', function(e) {
+        appState.userName = e.target.value || "User_01"; // Update State
+        renderUI(); // Tell the UI to look at the new state
+    });
+
+    document.getElementById('levelSelect').addEventListener('change', function(e) {
+        appState.userLevel = e.target.value; // Update State
+        renderUI(); // Tell the UI to look at the new state
+    });
+
+    // Initialize
+    renderUI();
   </script>
 
 </body>
