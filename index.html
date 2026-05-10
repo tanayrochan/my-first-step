@@ -1,92 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 23: Global State</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex items-center justify-center p-6 text-white font-sans">
+<body class="bg-zinc-950 min-h-screen flex items-center justify-center text-white">
 
-  <div class="w-full max-w-xl grid grid-cols-1 md:grid-cols-2 gap-6">
-    
-    <div class="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 shadow-xl">
-        <h2 class="text-indigo-400 font-black text-xs uppercase tracking-widest mb-6">Settings</h2>
-        
+  <div class="w-full max-w-xl grid grid-cols-2 gap-6">
+    <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
         <div class="space-y-4">
-            <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Display Name</label>
-                <input type="text" id="nameInput" class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 mt-1 focus:border-indigo-500 outline-none transition-all">
-            </div>
-            <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Experience Level</label>
-                <select id="levelSelect" class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 mt-1 outline-none">
-                    <option value="Noob">Noob</option>
-                    <option value="Beast">Beast</option>
-                    <option value="God Mode">God Mode</option>
-                </select>
-            </div>
+            <input type="text" id="nameInput" placeholder="Enter Name" class="w-full bg-black border border-zinc-700 rounded-lg p-2 outline-none">
+            <select id="levelSelect" class="w-full bg-black border border-zinc-700 rounded-lg p-2">
+                <option value="Noob">Noob</option>
+                <option value="Beast">Beast</option>
+                <option value="God Mode">God Mode</option>
+            </select>
         </div>
     </div>
 
-    <div id="profileCard" class="bg-indigo-600 p-8 rounded-[2rem] flex flex-col justify-between shadow-2xl shadow-indigo-500/20">
-        <div>
-            <div id="levelBadge" class="bg-white/20 w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 tracking-tighter">Noob</div>
-            <h1 id="displayName" class="text-3xl font-black italic">User_01</h1>
-        </div>
-        
-        <div class="mt-12">
-            <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest">Account Status</p>
-            <p class="font-mono text-sm">Active & Verified</p>
-        </div>
+    <div id="profileCard" class="p-6 rounded-2xl transition-colors duration-300">
+        <div id="levelBadge" class="bg-white/20 w-fit px-2 py-1 rounded text-[10px] font-bold uppercase mb-2">Noob</div>
+        <h1 id="displayName" class="text-2xl font-bold">User_01</h1>
     </div>
-
   </div>
 
   <script>
-    // 1. THE STATE (The Single Source of Truth)
-    // This object controls EVERYTHING you see on the right side.
-    let appState = {
-        userName: "User_01",
-        userLevel: "Noob"
+    const state = { name: "User_01", level: "Noob" };
+
+    const colors = {
+        "Noob": "bg-indigo-600",
+        "Beast": "bg-emerald-600",
+        "God Mode": "bg-orange-500"
     };
 
-    // 2. THE RENDERER (Updates the UI based on the State)
-    function renderUI() {
-        const nameDisplay = document.getElementById('displayName');
-        const levelBadge = document.getElementById('levelBadge');
+    function render() {
         const card = document.getElementById('profileCard');
-
-        // Update Text
-        nameDisplay.innerText = appState.userName;
-        levelBadge.innerText = appState.userLevel;
-
-        // Update Style based on Level
-        if (appState.userLevel === "God Mode") {
-            card.classList.replace('bg-indigo-600', 'bg-orange-500');
-            levelBadge.classList.replace('bg-white/20', 'bg-black/20');
-        } else if (appState.userLevel === "Beast") {
-            card.classList.replace('bg-orange-500', 'bg-emerald-600');
-            card.classList.replace('bg-indigo-600', 'bg-emerald-600');
-        } else {
-            card.className = "bg-indigo-600 p-8 rounded-[2rem] flex flex-col justify-between shadow-2xl shadow-indigo-500/20 transition-all duration-500";
-        }
+        document.getElementById('displayName').innerText = state.name;
+        document.getElementById('levelBadge').innerText = state.level;
+        
+        card.className = `p-6 rounded-2xl transition-colors duration-300 ${colors[state.level]}`;
     }
 
-    // 3. THE EVENTS (Update the State, then re-render)
-    document.getElementById('nameInput').addEventListener('input', function(e) {
-        appState.userName = e.target.value || "User_01"; // Update State
-        renderUI(); // Tell the UI to look at the new state
+    document.getElementById('nameInput').addEventListener('input', (e) => {
+        state.name = e.target.value || "User_01";
+        render();
     });
 
-    document.getElementById('levelSelect').addEventListener('change', function(e) {
-        appState.userLevel = e.target.value; // Update State
-        renderUI(); // Tell the UI to look at the new state
+    document.getElementById('levelSelect').addEventListener('change', (e) => {
+        state.level = e.target.value;
+        render();
     });
 
-    // Initialize
-    renderUI();
+    render();
   </script>
-
 </body>
 </html>
