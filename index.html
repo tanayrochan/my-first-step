@@ -1,56 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 24: Array State</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen flex items-center justify-center text-white">
+<body class="bg-zinc-950 min-h-screen p-10 text-white font-sans">
 
-  <div class="w-full max-w-xl grid grid-cols-2 gap-6">
-    <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
-        <div class="space-y-4">
-            <input type="text" id="nameInput" placeholder="Enter Name" class="w-full bg-black border border-zinc-700 rounded-lg p-2 outline-none">
-            <select id="levelSelect" class="w-full bg-black border border-zinc-700 rounded-lg p-2">
-                <option value="Noob">Noob</option>
-                <option value="Beast">Beast</option>
-                <option value="God Mode">God Mode</option>
-            </select>
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-4xl font-black mb-8 tracking-tighter">PROJECT <span class="text-indigo-500">TRACKER</span></h1>
+
+    <div class="flex gap-3 mb-10 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+        <input type="text" id="projName" placeholder="Project Name" class="flex-1 bg-black border border-zinc-700 rounded-xl px-4 py-2 outline-none focus:border-indigo-500">
+        <button id="addBtn" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-xl font-bold transition-all active:scale-95">
+            ADD
+        </button>
+    </div>
+
+    <div id="projectList" class="grid grid-cols-1 gap-4">
         </div>
-    </div>
-
-    <div id="profileCard" class="p-6 rounded-2xl transition-colors duration-300">
-        <div id="levelBadge" class="bg-white/20 w-fit px-2 py-1 rounded text-[10px] font-bold uppercase mb-2">Noob</div>
-        <h1 id="displayName" class="text-2xl font-bold">User_01</h1>
-    </div>
   </div>
 
   <script>
-    const state = { name: "User_01", level: "Noob" };
+    // 1. THE STATE (An Array of Objects)
+    let projects = [
+        { id: 1, name: "Build Portfolio" },
+        { id: 2, name: "Learn Fetch API" }
+    ];
 
-    const colors = {
-        "Noob": "bg-indigo-600",
-        "Beast": "bg-emerald-600",
-        "God Mode": "bg-orange-500"
-    };
+    const listDiv = document.getElementById('projectList');
+    const input = document.getElementById('projName');
+    const addBtn = document.getElementById('addBtn');
 
-    function render() {
-        const card = document.getElementById('profileCard');
-        document.getElementById('displayName').innerText = state.name;
-        document.getElementById('levelBadge').innerText = state.level;
-        
-        card.className = `p-6 rounded-2xl transition-colors duration-300 ${colors[state.level]}`;
+    // 2. THE RENDERER
+    function renderProjects() {
+        listDiv.innerHTML = ""; // Clear the list
+
+        projects.forEach((proj) => {
+            // Create the card
+            const card = document.createElement('div');
+            card.className = "bg-zinc-900 border border-zinc-800 p-5 rounded-2xl flex justify-between items-center group hover:border-indigo-500/50 transition-all";
+            
+            card.innerHTML = `
+                <span class="font-medium text-zinc-300">${proj.name}</span>
+                <button onclick="deleteProject(${proj.id})" class="text-zinc-600 hover:text-red-500 text-xs font-bold uppercase tracking-widest transition-colors">
+                    Delete
+                </button>
+            `;
+            
+            listDiv.appendChild(card);
+        });
     }
 
-    document.getElementById('nameInput').addEventListener('input', (e) => {
-        state.name = e.target.value || "User_01";
-        render();
+    // 3. THE ADD LOGIC
+    addBtn.addEventListener('click', () => {
+        if(input.value === "") return;
+
+        const newProject = {
+            id: Date.now(), // Unique ID based on time
+            name: input.value
+        };
+
+        projects.push(newProject); // Add to our Array (State)
+        input.value = "";          // Clear input
+        renderProjects();          // Redraw the UI
     });
 
-    document.getElementById('levelSelect').addEventListener('change', (e) => {
-        state.level = e.target.value;
-        render();
-    });
+    // 4. THE DELETE LOGIC
+    // We make this global so the "onclick" in the HTML can find it
+    window.deleteProject = function(id) {
+        // Filter out the one we want to delete
+        projects = projects.filter(p => p.id !== id);
+        renderProjects(); // Redraw the UI
+    };
 
-    render();
+    // Initial Load
+    renderProjects();
   </script>
+
 </body>
 </html>
