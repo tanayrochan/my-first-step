@@ -1,83 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 24: Array State</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 min-h-screen p-10 text-white font-sans">
-
-  <div class="max-w-2xl mx-auto">
-    <h1 class="text-4xl font-black mb-8 tracking-tighter">PROJECT <span class="text-indigo-500">TRACKER</span></h1>
-
-    <div class="flex gap-3 mb-10 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-        <input type="text" id="projName" placeholder="Project Name" class="flex-1 bg-black border border-zinc-700 rounded-xl px-4 py-2 outline-none focus:border-indigo-500">
-        <button id="addBtn" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-xl font-bold transition-all active:scale-95">
-            ADD
-        </button>
+<body class="bg-zinc-950 text-white p-10">
+  <div class="max-w-md mx-auto">
+    <div class="flex gap-2 mb-8">
+      <input id="in" type="text" class="flex-1 bg-zinc-900 border border-zinc-800 p-2 rounded">
+      <button onclick="add()" class="bg-indigo-600 px-4 rounded">ADD</button>
     </div>
-
-    <div id="projectList" class="grid grid-cols-1 gap-4">
-        </div>
+    <div id="list" class="space-y-2"></div>
   </div>
 
   <script>
-    // 1. THE STATE (An Array of Objects)
-    let projects = [
-        { id: 1, name: "Build Portfolio" },
-        { id: 2, name: "Learn Fetch API" }
-    ];
+    let projects = [];
 
-    const listDiv = document.getElementById('projectList');
-    const input = document.getElementById('projName');
-    const addBtn = document.getElementById('addBtn');
-
-    // 2. THE RENDERER
-    function renderProjects() {
-        listDiv.innerHTML = ""; // Clear the list
-
-        projects.forEach((proj) => {
-            // Create the card
-            const card = document.createElement('div');
-            card.className = "bg-zinc-900 border border-zinc-800 p-5 rounded-2xl flex justify-between items-center group hover:border-indigo-500/50 transition-all";
-            
-            card.innerHTML = `
-                <span class="font-medium text-zinc-300">${proj.name}</span>
-                <button onclick="deleteProject(${proj.id})" class="text-zinc-600 hover:text-red-500 text-xs font-bold uppercase tracking-widest transition-colors">
-                    Delete
-                </button>
-            `;
-            
-            listDiv.appendChild(card);
-        });
+    function render() {
+      list.innerHTML = projects.map(p => `
+        <div class="bg-zinc-900 p-4 rounded flex justify-between">
+          <span>${p.name}</span>
+          <button onclick="del(${p.id})" class="text-red-500">Delete</button>
+        </div>
+      `).join('');
     }
 
-    // 3. THE ADD LOGIC
-    addBtn.addEventListener('click', () => {
-        if(input.value === "") return;
+    function add() {
+      if (!id_in.value) return;
+      projects.push({ id: Date.now(), name: id_in.value });
+      id_in.value = '';
+      render();
+    }
 
-        const newProject = {
-            id: Date.now(), // Unique ID based on time
-            name: input.value
-        };
+    function del(id) {
+      projects = projects.filter(p => p.id !== id);
+      render();
+    }
 
-        projects.push(newProject); // Add to our Array (State)
-        input.value = "";          // Clear input
-        renderProjects();          // Redraw the UI
-    });
-
-    // 4. THE DELETE LOGIC
-    // We make this global so the "onclick" in the HTML can find it
-    window.deleteProject = function(id) {
-        // Filter out the one we want to delete
-        projects = projects.filter(p => p.id !== id);
-        renderProjects(); // Redraw the UI
-    };
-
-    // Initial Load
-    renderProjects();
+    const id_in = document.getElementById('in');
+    const list = document.getElementById('list');
+    render();
   </script>
-
 </body>
 </html>
