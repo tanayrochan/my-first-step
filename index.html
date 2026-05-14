@@ -1,44 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 25: Real-time Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 text-white p-10">
+<body class="bg-slate-950 min-h-screen p-8 text-slate-200 font-sans">
+
   <div class="max-w-md mx-auto">
-    <div class="flex gap-2 mb-8">
-      <input id="in" type="text" class="flex-1 bg-zinc-900 border border-zinc-800 p-2 rounded">
-      <button onclick="add()" class="bg-indigo-600 px-4 rounded">ADD</button>
+    <header class="mb-10 text-center">
+        <h1 class="text-3xl font-black text-white tracking-widest">BEAST<span class="text-indigo-500">LIST</span></h1>
+        <p class="text-slate-500 text-xs mt-2 uppercase tracking-tighter">Real-time Database Filter</p>
+    </header>
+
+    <div class="relative mb-8">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by name or skill..." 
+            class="w-full bg-slate-900 border border-slate-800 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-xl text-sm"
+        >
     </div>
-    <div id="list" class="space-y-2"></div>
+
+    <div id="directory" class="space-y-3">
+        </div>
   </div>
 
   <script>
-    let projects = [];
+    // 1. DATA (Our "Database")
+    const developers = [
+        { name: "Alex Rivera", skill: "React", level: "Senior" },
+        { name: "Jordan Smith", skill: "JavaScript", level: "Mid" },
+        { name: "Sarah Chen", skill: "Next.js", level: "Lead" },
+        { name: "Mike Ross", skill: "Tailwind", level: "Junior" },
+        { name: "Elena Vogt", skill: "TypeScript", level: "Senior" }
+    ];
 
-    function render() {
-      list.innerHTML = projects.map(p => `
-        <div class="bg-zinc-900 p-4 rounded flex justify-between">
-          <span>${p.name}</span>
-          <button onclick="del(${p.id})" class="text-red-500">Delete</button>
-        </div>
-      `).join('');
+    const directory = document.getElementById('directory');
+    const searchInput = document.getElementById('searchInput');
+
+    // 2. THE RENDERER (The Machine that draws the UI)
+    function displayDevs(filteredList) {
+        directory.innerHTML = ""; // Clear list
+
+        if (filteredList.length === 0) {
+            directory.innerHTML = `<p class="text-center text-slate-600 mt-10 italic">No beasts found matching that criteria...</p>`;
+            return;
+        }
+
+        filteredList.forEach(dev => {
+            const card = document.createElement('div');
+            card.className = "bg-slate-900 border border-slate-800 p-5 rounded-2xl flex justify-between items-center hover:bg-slate-800/50 transition-all cursor-pointer border-l-4 border-l-transparent hover:border-l-indigo-500";
+            
+            card.innerHTML = `
+                <div>
+                    <h3 class="font-bold text-white">${dev.name}</h3>
+                    <p class="text-xs text-slate-500">${dev.skill}</p>
+                </div>
+                <span class="text-[10px] font-black bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded-md uppercase tracking-tighter">${dev.level}</span>
+            `;
+            directory.appendChild(card);
+        });
     }
 
-    function add() {
-      if (!id_in.value) return;
-      projects.push({ id: Date.now(), name: id_in.value });
-      id_in.value = '';
-      render();
-    }
+    // 3. THE SEARCH LOGIC
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase(); // What the user typed
 
-    function del(id) {
-      projects = projects.filter(p => p.id !== id);
-      render();
-    }
+        const matches = developers.filter(dev => {
+            // Check if name OR skill includes the search term
+            return dev.name.toLowerCase().includes(term) || 
+                   dev.skill.toLowerCase().includes(term);
+        });
 
-    const id_in = document.getElementById('in');
-    const list = document.getElementById('list');
-    render();
+        displayDevs(matches); // Redraw with ONLY the matches
+    });
+
+    // Initial Load
+    displayDevs(developers);
   </script>
+
 </body>
 </html>
