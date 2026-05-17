@@ -3,16 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 28: Capstone Dashboard</title>
+  <title>Day 29: Capstone Dashboard Controller</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 min-h-screen text-zinc-300 font-sans p-8 flex items-center justify-center">
 
   <div class="w-full max-w-md">
-    <header class="mb-8">
-        <h1 class="text-3xl font-black text-white tracking-tighter italic">MARKET_<span class="text-indigo-500">PULSE</span></h1>
-        <p class="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-1">Live Web-Socket Tracker</p>
+    <header class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tighter italic">MARKET_<span class="text-indigo-500">PULSE</span></h1>
+            <p class="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-1">Live Web Feed</p>
+        </div>
+        <button id="refreshBtn" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider active:scale-95 transition-all">
+            REFRESH
+        </button>
     </header>
+
+    <div class="bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-2xl mb-6 flex justify-between items-center">
+        <span class="text-xs font-bold font-mono text-indigo-400 uppercase tracking-wider">Top 5 Index Avg:</span>
+        <span id="averagePriceDisplay" class="text-sm font-mono font-black text-indigo-400">$0.00</span>
+    </div>
 
     <div id="dashboardContainer" class="space-y-4">
         </div>
@@ -31,17 +41,21 @@ let cryptoData = [];
 // 2. THE UI RENDERER
 function renderDashboard() {
     const container = document.getElementById('dashboardContainer');
-    container.innerHTML = ""; // Clear loader text
+    const avgDisplay = document.getElementById('averagePriceDisplay');
+    container.innerHTML = ""; // Clear loader
+
+    let totalCost = 0;
 
     cryptoData.forEach(coin => {
-        // Format numbers to clean decimals
-        const price = parseFloat(coin.priceUsd).toFixed(2);
+        const price = parseFloat(coin.priceUsd);
         const change = parseFloat(coin.changePercent24Hr).toFixed(2);
         const isPositive = change >= 0;
 
+        totalCost += price; // Aggregate running sum
+
         // Create card element
         const card = document.createElement('div');
-        card.className = "bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex justify-between items-center hover:border-zinc-700 transition-all shadow-xl";
+        card.className = "bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex justify-between items-center hover:border-zinc-700 transition-all shadow-xl shadow-black/40";
 
         card.innerHTML = `
             <div>
@@ -49,7 +63,7 @@ function renderDashboard() {
                 <h3 class="text-xl font-black text-white tracking-tight mt-0.5">${coin.name}</h3>
             </div>
             <div class="text-right">
-                <p class="text-lg font-bold text-white font-mono">$${price}</p>
+                <p class="text-lg font-bold text-white font-mono">$${price.toFixed(2)}</p>
                 <p class="text-xs font-bold font-mono mt-0.5 ${isPositive ? 'text-emerald-500' : 'text-red-500'}">
                     ${isPositive ? '▲' : '▼'} ${Math.abs(change)}%
                 </p>
@@ -58,35 +72,40 @@ function renderDashboard() {
 
         container.appendChild(card);
     });
+
+    // Calculate and display the average price of top assets
+    const averagePrice = cryptoData.length > 0 ? (totalCost / cryptoData.length) : 0;
+    avgDisplay.innerText = `$${averagePrice.toFixed(2)}`;
 }
 
-// 3. INITIALIZATION FUNCTION
+// 3. THE REFRESH CONTROLLER
+async function handleRefresh() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    
+    // UI Feedback: Disable button while fetching data
+    refreshBtn.innerText = "UPDATING...";
+    refreshBtn.disabled = true;
+    refreshBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+    // Fetch new data stream
+    cryptoData = await fetchCryptoPrices();
+    renderDashboard();
+
+    // Reset button UI state
+    refreshBtn.innerText = "REFRESH";
+    refreshBtn.disabled = false;
+    refreshBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
+// 4. INITIALIZATION FUNCTION
 async function initApp() {
     const container = document.getElementById('dashboardContainer');
     container.innerHTML = `<p class="text-zinc-500 text-sm font-mono tracking-wide text-center animate-pulse">CONNECTING TO LIVE FEED...</p>`;
     
-    // Await the data from our API module
+    document.getElementById('refreshBtn').addEventListener('click', handleRefresh);
+
     cryptoData = await fetchCryptoPrices();
-    
-    // Render it to the screen
     renderDashboard();
 }
 
-// Run the app on page load
 initApp();
-// api.js
-
-// This function goes out to the web, fetches live coin data, and returns it
-export async function fetchCryptoPrices() {
-    try {
-        // Fetching top assets from a free, public crypto API
-        const response = await fetch('https://api.coincap.io/v2/assets?limit=5');
-        const data = await response.json();
-        
-        // Return just the array of coin data
-        return data.data; 
-    } catch (error) {
-        console.error("Error fetching data from API:", error);
-        return []; // Return empty array if network fails
-    }
-}
