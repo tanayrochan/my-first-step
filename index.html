@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 29: Capstone Dashboard Controller</title>
+  <title>Day 30: Capstone Final</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 min-h-screen text-zinc-300 font-sans p-8 flex items-center justify-center">
@@ -19,13 +19,19 @@
         </button>
     </header>
 
-    <div class="bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-2xl mb-6 flex justify-between items-center">
-        <span class="text-xs font-bold font-mono text-indigo-400 uppercase tracking-wider">Top 5 Index Avg:</span>
+    <div class="bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-2xl mb-4 flex justify-between items-center">
+        <span class="text-xs font-bold font-mono text-indigo-400 uppercase tracking-wider">Market Combined Value:</span>
         <span id="averagePriceDisplay" class="text-sm font-mono font-black text-indigo-400">$0.00</span>
     </div>
 
-    <div id="dashboardContainer" class="space-y-4">
+    <div id="dashboardContainer" class="space-y-4 mb-6">
         </div>
+
+    <footer class="text-center">
+        <p class="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">
+            Last Sync: <span id="syncTimestamp" class="text-zinc-400">Never</span>
+        </p>
+    </footer>
   </div>
 
   <script type="module" src="/app.js"></script>
@@ -41,19 +47,18 @@ let cryptoData = [];
 // 2. THE UI RENDERER
 function renderDashboard() {
     const container = document.getElementById('dashboardContainer');
-    const avgDisplay = document.getElementById('averagePriceDisplay');
-    container.innerHTML = ""; // Clear loader
+    const totalDisplay = document.getElementById('averagePriceDisplay');
+    container.innerHTML = ""; 
 
-    let totalCost = 0;
+    let totalCombinedValue = 0;
 
     cryptoData.forEach(coin => {
         const price = parseFloat(coin.priceUsd);
         const change = parseFloat(coin.changePercent24Hr).toFixed(2);
         const isPositive = change >= 0;
 
-        totalCost += price; // Aggregate running sum
+        totalCombinedValue += price; // Day 29 Challenge: Sum Total
 
-        // Create card element
         const card = document.createElement('div');
         card.className = "bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex justify-between items-center hover:border-zinc-700 transition-all shadow-xl shadow-black/40";
 
@@ -69,43 +74,58 @@ function renderDashboard() {
                 </p>
             </div>
         `;
-
         container.appendChild(card);
     });
 
-    // Calculate and display the average price of top assets
-    const averagePrice = cryptoData.length > 0 ? (totalCost / cryptoData.length) : 0;
-    avgDisplay.innerText = `$${averagePrice.toFixed(2)}`;
+    totalDisplay.innerText = `$${totalCombinedValue.toFixed(2)}`;
 }
 
-// 3. THE REFRESH CONTROLLER
+// 3. PERSISTENCE HELPER
+function updateSyncTime() {
+    const timeString = new Date().toLocaleTimeString();
+    
+    // Save to browser hard drive
+    localStorage.setItem('lastMarketSync', timeString);
+    
+    // Update UI text element
+    document.getElementById('syncTimestamp').innerText = timeString;
+}
+
+// 4. THE REFRESH CONTROLLER
 async function handleRefresh() {
     const refreshBtn = document.getElementById('refreshBtn');
     
-    // UI Feedback: Disable button while fetching data
     refreshBtn.innerText = "UPDATING...";
     refreshBtn.disabled = true;
     refreshBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
-    // Fetch new data stream
     cryptoData = await fetchCryptoPrices();
     renderDashboard();
+    
+    // Update local storage tracking timestamp on success
+    updateSyncTime();
 
-    // Reset button UI state
     refreshBtn.innerText = "REFRESH";
     refreshBtn.disabled = false;
     refreshBtn.classList.remove('opacity-50', 'cursor-not-allowed');
 }
 
-// 4. INITIALIZATION FUNCTION
+// 5. INITIALIZATION FUNCTION
 async function initApp() {
     const container = document.getElementById('dashboardContainer');
     container.innerHTML = `<p class="text-zinc-500 text-sm font-mono tracking-wide text-center animate-pulse">CONNECTING TO LIVE FEED...</p>`;
     
     document.getElementById('refreshBtn').addEventListener('click', handleRefresh);
 
+    // Day 30 Check: Did the user sync previously?
+    const savedTime = localStorage.getItem('lastMarketSync');
+    if (savedTime) {
+        document.getElementById('syncTimestamp').innerText = savedTime;
+    }
+
     cryptoData = await fetchCryptoPrices();
     renderDashboard();
 }
 
 initApp();
+
