@@ -1,131 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 30: Capstone Final</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-zinc-950 min-h-screen text-zinc-300 font-sans p-8 flex items-center justify-center">
+// MarketCard.jsx
 
-  <div class="w-full max-w-md">
-    <header class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-black text-white tracking-tighter italic">MARKET_<span class="text-indigo-500">PULSE</span></h1>
-            <p class="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-1">Live Web Feed</p>
-        </div>
-        <button id="refreshBtn" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider active:scale-95 transition-all">
-            REFRESH
-        </button>
-    </header>
-
-    <div class="bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-2xl mb-4 flex justify-between items-center">
-        <span class="text-xs font-bold font-mono text-indigo-400 uppercase tracking-wider">Market Combined Value:</span>
-        <span id="averagePriceDisplay" class="text-sm font-mono font-black text-indigo-400">$0.00</span>
+// A standard JavaScript function that returns a piece of UI
+function MarketCard() {
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl">
+      <span className="text-zinc-500 text-xs font-mono font-bold uppercase">XAU</span>
+      <h3 class="text-xl font-black text-white mt-0.5">Gold Spot</h3>
+      <p className="text-lg font-bold text-emerald-400 font-mono mt-2">$2,350.40</p>
     </div>
-
-    <div id="dashboardContainer" class="space-y-4 mb-6">
-        </div>
-
-    <footer class="text-center">
-        <p class="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">
-            Last Sync: <span id="syncTimestamp" class="text-zinc-400">Never</span>
-        </p>
-    </footer>
-  </div>
-
-  <script type="module" src="/app.js"></script>
-
-</body>
-</html>
-// app.js
-import { fetchCryptoPrices } from './api.js';
-
-// 1. APP STATE
-let cryptoData = [];
-
-// 2. THE UI RENDERER
-function renderDashboard() {
-    const container = document.getElementById('dashboardContainer');
-    const totalDisplay = document.getElementById('averagePriceDisplay');
-    container.innerHTML = ""; 
-
-    let totalCombinedValue = 0;
-
-    cryptoData.forEach(coin => {
-        const price = parseFloat(coin.priceUsd);
-        const change = parseFloat(coin.changePercent24Hr).toFixed(2);
-        const isPositive = change >= 0;
-
-        totalCombinedValue += price; // Day 29 Challenge: Sum Total
-
-        const card = document.createElement('div');
-        card.className = "bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex justify-between items-center hover:border-zinc-700 transition-all shadow-xl shadow-black/40";
-
-        card.innerHTML = `
-            <div>
-                <span class="text-zinc-500 text-xs font-mono font-bold uppercase tracking-wider">${coin.symbol}</span>
-                <h3 class="text-xl font-black text-white tracking-tight mt-0.5">${coin.name}</h3>
-            </div>
-            <div class="text-right">
-                <p class="text-lg font-bold text-white font-mono">$${price.toFixed(2)}</p>
-                <p class="text-xs font-bold font-mono mt-0.5 ${isPositive ? 'text-emerald-500' : 'text-red-500'}">
-                    ${isPositive ? '▲' : '▼'} ${Math.abs(change)}%
-                </p>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-
-    totalDisplay.innerText = `$${totalCombinedValue.toFixed(2)}`;
+  );
 }
 
-// 3. PERSISTENCE HELPER
-function updateSyncTime() {
-    const timeString = new Date().toLocaleTimeString();
-    
-    // Save to browser hard drive
-    localStorage.setItem('lastMarketSync', timeString);
-    
-    // Update UI text element
-    document.getElementById('syncTimestamp').innerText = timeString;
-}
-
-// 4. THE REFRESH CONTROLLER
-async function handleRefresh() {
-    const refreshBtn = document.getElementById('refreshBtn');
-    
-    refreshBtn.innerText = "UPDATING...";
-    refreshBtn.disabled = true;
-    refreshBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
-    cryptoData = await fetchCryptoPrices();
-    renderDashboard();
-    
-    // Update local storage tracking timestamp on success
-    updateSyncTime();
-
-    refreshBtn.innerText = "REFRESH";
-    refreshBtn.disabled = false;
-    refreshBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-}
-
-// 5. INITIALIZATION FUNCTION
-async function initApp() {
-    const container = document.getElementById('dashboardContainer');
-    container.innerHTML = `<p class="text-zinc-500 text-sm font-mono tracking-wide text-center animate-pulse">CONNECTING TO LIVE FEED...</p>`;
-    
-    document.getElementById('refreshBtn').addEventListener('click', handleRefresh);
-
-    // Day 30 Check: Did the user sync previously?
-    const savedTime = localStorage.getItem('lastMarketSync');
-    if (savedTime) {
-        document.getElementById('syncTimestamp').innerText = savedTime;
-    }
-
-    cryptoData = await fetchCryptoPrices();
-    renderDashboard();
-}
-
-initApp();
+export default MarketCard;
 
