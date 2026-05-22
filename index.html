@@ -1,15 +1,13 @@
-// MarketCard.jsx
-
-// A standard JavaScript function that returns a piece of UI
-function MarketCard() {
+// This component is a reusable shell. It doesn't care what the data is yet.
+function AssetCard(props) {
   return (
     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl">
-      <span className="text-zinc-500 text-xs font-mono font-bold uppercase">XAU</span>
-      <h3 class="text-xl font-black text-white mt-0.5">Gold Spot</h3>
-      <p className="text-lg font-bold text-emerald-400 font-mono mt-2">$2,350.40</p>
+      <span className="text-zinc-500 text-xs font-mono font-bold uppercase">{props.symbol}</span>
+      <h3 className="text-xl font-black text-white mt-0.5">{props.name}</h3>
+      <p className="text-lg font-bold text-emerald-400 font-mono mt-2">${props.price}</p>
     </div>
   );
 }
 
-export default MarketCard;
+export default AssetCard;
 
