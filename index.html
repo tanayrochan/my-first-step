@@ -1,24 +1,31 @@
-// This component is a reusable shell. It doesn't care what the data is yet.
-function AssetCard(props) {
+// MetricCard.jsx
+export default function MetricCard({ title, value, change }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl">
-      <span className="text-zinc-500 text-xs font-mono font-bold uppercase">{props.symbol}</span>
-      <h3 className="text-xl font-black text-white mt-0.5">{props.name}</h3>
-      <p className="text-lg font-bold text-emerald-400 font-mono mt-2">${props.price}</p>
+    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl shadow-xl">
+      <p className="text-zinc-500 text-xs font-mono font-bold tracking-wider uppercase">{title}</p>
+      <h3 className="text-2xl font-black text-white font-mono mt-1">{value}</h3>
+      <p className="text-xs font-bold text-emerald-400 font-mono mt-2">▲ {change}%</p>
     </div>
   );
 }
+// MarketGrid.jsx
+import MetricCard from "./MetricCard";
 
-export default AssetCard;
-import AssetCard from './AssetCard';
-
-function Dashboard() {
+export default function MarketGrid() {
   return (
-    <div className="space-y-4">
-      {/* Passing completely different data into the exact same layout shell */}
-      <AssetCard name="Gold Spot" symbol="XAU" price="2,350.40" />
-      <AssetCard name="Silver Spot" symbol="XAG" price="29.15" />
-      <AssetCard name="Bitcoin" symbol="BTC" price="67,200.00" />
+    <div className="w-full max-w-5xl mx-auto p-6">
+      {/* Header Container */}
+      <header className="mb-8">
+        <h1 className="text-3xl font-black text-white tracking-tight">MARKET_OVERVIEW</h1>
+        <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-1">Global Indices Feed</p>
+      </header>
+
+      {/* Responsive Grid System: 1 column on mobile, 3 columns on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <MetricCard title="SENSEX Ind" value="74,244.90" change="0.45" />
+        <MetricCard title="Gold Spot" value="$2,350.40" change="1.20" />
+        <MetricCard title="Silver Spot" value="$29.15" change="0.85" />
+      </div>
     </div>
   );
 }
