@@ -1,1 +1,3 @@
-taking a break for phase 1 completion for today and start phase 2 react learning and project building from tomorrow
+working on custom made project ideas and implementing 
+project 1 financial stocks price and value tracker 
+project 2 industrial fintech website 
