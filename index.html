@@ -1,32 +1,26 @@
-// MetricCard.jsx
-export default function MetricCard({ title, value, change }) {
+// FollowButton.jsx
+import { useState } from 'react'; // 1. Import the hook from React
+
+export default function FollowButton() {
+  // 2. Initialize state. Default value is false (not following)
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  function handleToggle() {
+    // 3. Use the setter function to invert the boolean state value
+    setIsFollowing(!isFollowing);
+  }
+
   return (
-    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl shadow-xl">
-      <p className="text-zinc-500 text-xs font-mono font-bold tracking-wider uppercase">{title}</p>
-      <h3 className="text-2xl font-black text-white font-mono mt-1">{value}</h3>
-      <p className="text-xs font-bold text-emerald-400 font-mono mt-2">▲ {change}%</p>
-    </div>
+    <button 
+      onClick={handleToggle}
+      className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider transition-all border ${
+        isFollowing 
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+          : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700'
+      }`}
+    >
+      {/* 4. The UI text updates dynamically based on state */}
+      {isFollowing ? '✓ WATCHING' : '+ ADD TO WATCHLIST'}
+    </button>
   );
 }
-// MarketGrid.jsx
-import MetricCard from "./MetricCard";
-
-export default function MarketGrid() {
-  return (
-    <div className="w-full max-w-5xl mx-auto p-6">
-      {/* Header Container */}
-      <header className="mb-8">
-        <h1 className="text-3xl font-black text-white tracking-tight">MARKET_OVERVIEW</h1>
-        <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-1">Global Indices Feed</p>
-      </header>
-
-      {/* Responsive Grid System: 1 column on mobile, 3 columns on desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard title="SENSEX Ind" value="74,244.90" change="0.45" />
-        <MetricCard title="Gold Spot" value="$2,350.40" change="1.20" />
-        <MetricCard title="Silver Spot" value="$29.15" change="0.85" />
-      </div>
-    </div>
-  );
-}
-
