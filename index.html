@@ -1,17 +1,6 @@
 // FollowButton.jsx
 import { useState } from 'react'; // 1. Import the hook from React
 
-export default function FollowButton() {
-  // 2. Initialize state. Default value is false (not following)
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  function handleToggle() {
-    // 3. Use the setter function to invert the boolean state value
-    setIsFollowing(!isFollowing);
-  }
-
-  return (
-    <button 
       onClick={handleToggle}
       className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider transition-all border ${
         isFollowing 
