@@ -1,188 +1,80 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
-import { CheckCircle, Bell, MessageSquare, DollarSign, Shield, Clock } from "lucide-react";
+import Image from "next/image"
+import Link from "next/link"
+import { MapPin, Clock } from "lucide-react"
 
-export default function ForSellersPage() {
+interface EquipmentData {
+  id: string
+  model: string
+  year: number
+  hours: number
+  location: string
+  image: string
+  price: number
+  brand?: string
+  type?: string
+}
+
+function calculateAccessFee(price: number): number {
+  const fee = price * 0.01
+  return Math.max(fee, 10) // Minimum $10
+}
+
+export function EquipmentCard({ equipment }: { equipment: EquipmentData }) {
+  const accessFee = calculateAccessFee(equipment.price)
+
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            List Your Equipment <span className="text-primary">100% Free</span>
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            HeavyVal connects you with serious buyers across the US. No listing fees, no commission on sales. You keep 100% of your sale price.
+    <Link 
+      href={`/listing/${equipment.id}`}
+      className="group relative flex flex-col overflow-hidden rounded-lg border border-border/50 bg-card transition-all duration-300 hover:border-border hover:shadow-xl hover:shadow-black/20"
+    >
+      {/* Large Machine Photo */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+        <Image
+          src={equipment.image}
+          alt={equipment.model}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          unoptimized
+        />
+        {/* View Details Overlay */}
+        <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20 flex items-center justify-center">
+          <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-4 py-2 rounded-md text-sm">
+            View Details
+          </span>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="flex flex-1 flex-col p-4">
+        {/* Model Name */}
+        <h3 className="text-lg font-semibold text-foreground leading-tight mb-3">
+          {equipment.year} {equipment.model}
+        </h3>
+
+        {/* Meta Info: Hours & Location (state level only) */}
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="h-4 w-4" />
+            {equipment.hours.toLocaleString()} hrs
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <MapPin className="h-4 w-4" />
+            {equipment.location}
+          </span>
+        </div>
+
+        {/* Price Section */}
+        <div className="mt-auto pt-4 border-t border-border/30">
+          <p className="text-2xl font-bold text-foreground font-mono tracking-tight">
+            ${equipment.price.toLocaleString()}
           </p>
-          <Link
-            href="/list-equipment"
-            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors text-lg"
-          >
-            List Your Equipment Now
-          </Link>
-        </section>
-
-        {/* How It Works for Sellers */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-8 text-center">How It Works for Sellers</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-bold">1</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">List Your Equipment Free</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Upload photos, add details (hours, condition, damages, specs), set your asking price. No fees to list.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-bold">2</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Buyers Browse Your Listing</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Serious buyers find your equipment. They can see photos, specs, and location (state level only - your exact address is hidden).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Bell className="w-5 h-5 text-amber-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Respond to Availability Requests</h3>
-                  <p className="text-muted-foreground text-sm">
-                    When a buyer clicks &quot;Ask Seller: Still Available?&quot; you get a notification. Click <span className="text-green-500 font-medium">Yes</span> or <span className="text-red-500 font-medium">No</span>.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-5 h-5 text-green-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Buyer Unlocks Your Contact</h3>
-                  <p className="text-muted-foreground text-sm">
-                    If you click Yes, the buyer pays a small fee to unlock your phone, email, and exact location. They contact you directly.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <DollarSign className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Negotiate & Get Paid Directly</h3>
-                  <p className="text-muted-foreground text-sm">
-                    You negotiate price, arrange inspection, and receive payment directly from the buyer. HeavyVal is not involved in the transaction.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">You Keep 100%</h3>
-                  <p className="text-muted-foreground text-sm">
-                    No commission, no transaction fees, no hidden charges. The full sale price goes to you.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Important Alerts */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6">
-            <div className="flex items-start gap-4">
-              <Bell className="w-6 h-6 text-amber-500 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Stay Alert for Notifications</h3>
-                <p className="text-muted-foreground mb-4">
-                  When buyers ask if your equipment is still available, you&apos;ll receive a notification. Respond quickly with Yes or No to keep buyers engaged.
-                </p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-amber-500" />
-                    Check your notifications regularly
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    Click Yes if the equipment is still for sale
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-primary" />
-                    Update or remove listings when equipment sells
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Payment Info */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-          <div className="bg-card border border-border rounded-xl p-6">
-            <h3 className="font-semibold text-foreground mb-4 text-lg">About Payments</h3>
-            <div className="space-y-4 text-muted-foreground">
-              <p>
-                <strong className="text-foreground">HeavyVal does not handle equipment payments.</strong> We connect you with buyers - you negotiate and complete the sale directly.
-              </p>
-              <p>
-                When a buyer purchases your contact information, they pay HeavyVal a small access fee (1% of your listing price, minimum $10). This fee goes to HeavyVal, not to you.
-              </p>
-              <p>
-                You receive payment for the equipment directly from the buyer through whatever method you both agree on (cash, wire transfer, check, etc.).
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-foreground mb-4">Ready to Sell Your Equipment?</h2>
-            <p className="text-muted-foreground mb-6">
-              Join thousands of sellers reaching serious buyers across the US.
-            </p>
-            <Link
-              href="/list-equipment"
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              List Equipment Free
-            </Link>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-  );
+          <p className="text-sm text-muted-foreground mt-1">
+            Unlock for <span className="text-foreground font-medium">${accessFee.toLocaleString()}</span> <span className="text-muted-foreground/70">(1%)</span>
+          </p>
+        </div>
+      </div>
+    </Link>
+  )
 }
