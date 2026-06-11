@@ -1,130 +1,53 @@
-"use client"
+import type { Metadata, Viewport } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
 
-import Link from "next/link"
-import { useState } from "react"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+const _geist = Geist({ subsets: ["latin"] });
+const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
-export function Navigation() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export const metadata: Metadata = {
+  title: 'HeavyVal | Industrial Asset Marketplace',
+  description: 'Premium B2B marketplace for heavy machinery liquidation and salvage components. Connect with verified buyers and sellers of industrial assets.',
+  generator: 'v0.app',
+  icons: {
+    icon: [
+      {
+        url: '/icon-light-32x32.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icon-dark-32x32.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    apple: '/apple-icon.png',
+  },
+}
 
+export const viewport: Viewport = {
+  themeColor: '#0f172a',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                HeavyVal
-              </span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link 
-              href="/#listings" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Browse Equipment
-            </Link>
-            <Link 
-              href="/#how-it-works" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              How It Works
-            </Link>
-            <Link 
-              href="/for-sellers" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              For Sellers
-            </Link>
-          </div>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link 
-              href="/signin" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Sign In
-            </Link>
-            <Link href="/list-equipment">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-border/80 hover:bg-secondary hover:text-foreground"
-              >
-                List Equipment Free
-              </Button>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <span className="sr-only">Open main menu</span>
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl">
-          <div className="space-y-1 px-4 py-4">
-            <Link
-              href="/#listings"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Browse Equipment
-            </Link>
-            <Link
-              href="/#how-it-works"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/for-sellers"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              For Sellers
-            </Link>
-            <Link
-              href="/signin"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Sign In
-            </Link>
-            <div className="pt-2">
-              <Link href="/list-equipment" onClick={() => setMobileMenuOpen(false)}>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-border/80"
-                >
-                  List Equipment Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
+    <html lang="en" className="dark bg-background">
+      <body className="font-sans antialiased min-h-screen">
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
+    </html>
   )
 }
+
 
