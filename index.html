@@ -1,52 +1,81 @@
-import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
+"use client"
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+import Image from "next/image"
+import Link from "next/link"
+import { MapPin, Clock } from "lucide-react"
 
-export const metadata: Metadata = {
-  title: 'HeavyVal | Industrial Asset Marketplace',
-  description: 'Premium B2B marketplace for heavy machinery liquidation and salvage components. Connect with verified buyers and sellers of industrial assets.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+interface EquipmentData {
+  id: string
+  model: string
+  year: number
+  hours: number
+  location: string
+  image: string
+  price: number
+  brand?: string
+  type?: string
 }
 
-export const viewport: Viewport = {
-  themeColor: '#0f172a',
-  width: 'device-width',
-  initialScale: 1,
+function calculateAccessFee(price: number): number {
+  const fee = price * 0.01
+  return Math.max(fee, 10) // Minimum $10
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export function EquipmentCard({ equipment }: { equipment: EquipmentData }) {
+  const accessFee = calculateAccessFee(equipment.price)
+
   return (
-    <html lang="en" className="dark bg-background">
-      <body className="font-sans antialiased min-h-screen">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
-    </html>
+    <Link 
+      href={`/listing/${equipment.id}`}
+      className="group relative flex flex-col overflow-hidden rounded-lg border border-border/50 bg-card transition-all duration-300 hover:border-border hover:shadow-xl hover:shadow-black/20"
+    >
+      {/* Large Machine Photo */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+        <Image
+          src={equipment.image}
+          alt={equipment.model}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          unoptimized
+        />
+        {/* View Details Overlay */}
+        <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20 flex items-center justify-center">
+          <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-4 py-2 rounded-md text-sm">
+            View Details
+          </span>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="flex flex-1 flex-col p-4">
+        {/* Model Name */}
+        <h3 className="text-lg font-semibold text-foreground leading-tight mb-3">
+          {equipment.year} {equipment.model}
+        </h3>
+
+        {/* Meta Info: Hours & Location (state level only) */}
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="h-4 w-4" />
+            {equipment.hours.toLocaleString()} hrs
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <MapPin className="h-4 w-4" />
+            {equipment.location}
+          </span>
+        </div>
+
+        {/* Price Section */}
+        <div className="mt-auto pt-4 border-t border-border/30">
+          <p className="text-2xl font-bold text-foreground font-mono tracking-tight">
+            ${equipment.price.toLocaleString()}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Unlock for <span className="text-foreground font-medium">${accessFee.toLocaleString()}</span> <span className="text-muted-foreground/70">(1%)</span>
+          </p>
+        </div>
+      </div>
+    </Link>
   )
 }
 
