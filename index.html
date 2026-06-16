@@ -1,129 +1,227 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Search, ChevronDown, X } from "lucide-react"
 
-export function Navigation() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+const brands = ["All Brands", "Caterpillar", "John Deere", "Komatsu", "Volvo", "Hitachi", "Liebherr", "Case", "Bobcat", "Kubota", "Kobelco"]
+const types = ["All Types", "Excavators", "Loaders", "Dozers", "Cranes", "Forklifts", "Trucks", "Tractors", "Compactors"]
+const priceRanges = ["Any Price", "Under $25,000", "$25,000 - $50,000", "$50,000 - $100,000", "$100,000 - $250,000", "$250,000+"]
+const years = ["Any Year", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2015-2017", "Before 2015"]
+const states = ["All States", "Texas", "California", "Florida", "Ohio", "Illinois", "Pennsylvania", "Georgia", "Michigan", "Arizona", "North Carolina", "Nevada", "Washington", "Colorado", "Tennessee", "Oregon"]
+
+interface SearchFiltersProps {
+  onFiltersChange: (filters: {
+    searchQuery: string
+    brand: string
+    type: string
+    priceRange: string
+    year: string
+    state: string
+  }) => void
+}
+
+export function SearchFilters({ onFiltersChange }: SearchFiltersProps) {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedBrand, setSelectedBrand] = useState("All Brands")
+  const [selectedType, setSelectedType] = useState("All Types")
+  const [selectedPrice, setSelectedPrice] = useState("Any Price")
+  const [selectedYear, setSelectedYear] = useState("Any Year")
+  const [selectedState, setSelectedState] = useState("All States")
+  const [showFilters, setShowFilters] = useState(false)
+
+  const hasActiveFilters = 
+    selectedBrand !== "All Brands" || 
+    selectedType !== "All Types" || 
+    selectedPrice !== "Any Price" || 
+    selectedYear !== "Any Year" || 
+    selectedState !== "All States"
+
+  const updateFilters = (updates: Partial<{
+    searchQuery: string
+    brand: string
+    type: string
+    priceRange: string
+    year: string
+    state: string
+  }>) => {
+    const newFilters = {
+      searchQuery: updates.searchQuery ?? searchQuery,
+      brand: updates.brand ?? selectedBrand,
+      type: updates.type ?? selectedType,
+      priceRange: updates.priceRange ?? selectedPrice,
+      year: updates.year ?? selectedYear,
+      state: updates.state ?? selectedState,
+    }
+    onFiltersChange(newFilters)
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    updateFilters({ searchQuery: value })
+  }
+
+  const handleBrandChange = (value: string) => {
+    setSelectedBrand(value)
+    updateFilters({ brand: value })
+  }
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value)
+    updateFilters({ type: value })
+  }
+
+  const handlePriceChange = (value: string) => {
+    setSelectedPrice(value)
+    updateFilters({ priceRange: value })
+  }
+
+  const handleYearChange = (value: string) => {
+    setSelectedYear(value)
+    updateFilters({ year: value })
+  }
+
+  const handleStateChange = (value: string) => {
+    setSelectedState(value)
+    updateFilters({ state: value })
+  }
+
+  const clearFilters = () => {
+    setSearchQuery("")
+    setSelectedBrand("All Brands")
+    setSelectedType("All Types")
+    setSelectedPrice("Any Price")
+    setSelectedYear("Any Year")
+    setSelectedState("All States")
+    onFiltersChange({
+      searchQuery: "",
+      brand: "All Brands",
+      type: "All Types",
+      priceRange: "Any Price",
+      year: "Any Year",
+      state: "All States",
+    })
+  }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+    <section className="py-6 border-b border-border/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                HeavyVal
-              </span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link 
-              href="/#listings" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        {/* Search Bar */}
+        <div className="relative mb-4">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search by keyword, model, or brand... (e.g., CAT 320, excavator, John Deere)"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full rounded-lg border border-border/50 bg-input px-12 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => handleSearchChange("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
             >
-              Browse Equipment
-            </Link>
-            <Link 
-              href="/#how-it-works" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              How It Works
-            </Link>
-            <Link 
-              href="/for-sellers" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              For Sellers
-            </Link>
-          </div>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link 
-              href="/signin" 
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Sign In
-            </Link>
-            <Link href="/list-equipment">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-border/80 hover:bg-secondary hover:text-foreground"
-              >
-                List Equipment Free
-              </Button>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <span className="sr-only">Open main menu</span>
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl">
-          <div className="space-y-1 px-4 py-4">
-            <Link
-              href="/#listings"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Browse Equipment
-            </Link>
-            <Link
-              href="/#how-it-works"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/for-sellers"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              For Sellers
-            </Link>
-            <Link
-              href="/signin"
-              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Sign In
-            </Link>
-            <div className="pt-2">
-              <Link href="/list-equipment" onClick={() => setMobileMenuOpen(false)}>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full border-border/80"
-                >
-                  List Equipment Free
-                </Button>
-              </Link>
+        {/* Filter Toggle for Mobile */}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="lg:hidden w-full flex items-center justify-between rounded-lg border border-border/50 bg-secondary/50 px-4 py-3 text-sm text-foreground mb-4"
+        >
+          <span>Filters {hasActiveFilters && `(${[selectedBrand, selectedType, selectedPrice, selectedYear, selectedState].filter(f => !f.startsWith("All") && !f.startsWith("Any")).length} active)`}</span>
+          <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
+        </button>
+
+        {/* Filters */}
+        <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {/* Brand Filter */}
+            <div className="relative">
+              <select
+                value={selectedBrand}
+                onChange={(e) => handleBrandChange(e.target.value)}
+                className="w-full appearance-none rounded-md border border-border/50 bg-input px-3 py-2.5 pr-8 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                {brands.map((brand) => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* Type Filter */}
+            <div className="relative">
+              <select
+                value={selectedType}
+                onChange={(e) => handleTypeChange(e.target.value)}
+                className="w-full appearance-none rounded-md border border-border/50 bg-input px-3 py-2.5 pr-8 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                {types.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* Price Range Filter */}
+            <div className="relative">
+              <select
+                value={selectedPrice}
+                onChange={(e) => handlePriceChange(e.target.value)}
+                className="w-full appearance-none rounded-md border border-border/50 bg-input px-3 py-2.5 pr-8 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                {priceRanges.map((price) => (
+                  <option key={price} value={price}>{price}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* Year Filter */}
+            <div className="relative">
+              <select
+                value={selectedYear}
+                onChange={(e) => handleYearChange(e.target.value)}
+                className="w-full appearance-none rounded-md border border-border/50 bg-input px-3 py-2.5 pr-8 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* State Filter */}
+            <div className="relative">
+              <select
+                value={selectedState}
+                onChange={(e) => handleStateChange(e.target.value)}
+                className="w-full appearance-none rounded-md border border-border/50 bg-input px-3 py-2.5 pr-8 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                {states.map((state) => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
           </div>
+
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={clearFilters}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Clear all filters
+              </button>
+            </div>
+          )}
         </div>
-      )}
-    </nav>
+      </div>
+    </section>
   )
 }
+
