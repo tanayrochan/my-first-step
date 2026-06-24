@@ -1,1 +1,1 @@
-solved all errors and going good
+planning my comeback
