@@ -1,5 +1,7 @@
-let students = ["Tanay", "Rahul", "Priya"];
-
-for (let i = 0; i < students.length; i++) {
-    console.log(students[i]);
-}
+let transactions = [{amount:-700,category:"food",time:"7:00 pm",type:"expense"},
+    {amount:50000,category:"salary",time:"9:00 pm",type:"income"},
+    {amount:-200,category:"travel",time:"10:00 pm",type:"expense"}];
+let balance =0;
+for(let i =0; i<transactions.length; i++){
+balance += transactions[i].amount;}
+console.log(balance);
