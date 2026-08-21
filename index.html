@@ -1,17 +1,40 @@
 let transactions = [{amount:700,category:"food",time:"7:00 pm",type:"expense"},
     {amount:60000,category:"salary",time:"9:00 pm",type:"income"},
     {amount:200,category:"travel",time:"10:00 pm",type:"expense"}];
- let balance =0;
- function addtransactions(a,b,c,d){
-   let newtransaction={amount:a,category:b,time:c,type:d};
-   transactions.push(newtransaction);
- }
- addtransactions(1000,"extra","11.00pm","income");
- for(let i =0; i<transactions.length ; i++){
-  if (transactions[i].type==="income"){
-     balance+=transactions[i].amount;
-  }else {
-     balance-=transactions[i].amount;
-  }
- }
- console.log("the account balance is", balance);
+ const readline = require("readline");
+ const rl = readline.createInterface({input:process.stdin, output:process.stdout});
+ rl.question("enter amount",function (amount){
+     rl.question("enter category",function(category){
+         rl.question("enter time",function(time){
+             rl.question("enter type",function(type){
+                function addtransactions(a,b,c,d){
+                 let newtransaction={amount:a,category:b,time:c,type:d};
+                 transactions.push(newtransaction);
+                 }
+                 addtransactions(Number(amount), category, time, type);
+                 function calculateBalance(){
+                  let bal =0;
+                 for(let i =0; i<transactions.length ; i++){
+                  if (transactions[i].type==="income"){
+                   bal+=transactions[i].amount;
+                  }else {
+                   bal-=transactions[i].amount;
+    
+                    }
+                   }
+                    return bal;
+                }
+                let balance=calculateBalance();
+                function showTransactions(){
+                 for (let i=0; i<transactions.length; i++){
+                  console.log(transactions[i].amount,"-",transactions[i].category,"-",transactions[i].type,"-",transactions[i].time);
+                 }
+ 
+                  console.log("the account balance is", balance);}
+                 showTransactions();
+                 rl.close();     
+             });
+         });
+     });
+ });
+ 
