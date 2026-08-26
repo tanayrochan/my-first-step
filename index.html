@@ -1,2 +1,7 @@
-fs.writeFileSync("test.txt", "Hello Tanay");
- 
+const fs = require("fs");
+let transactions = {amount:300,category:"food",type:"expense"};
+let data = JSON.stringify(transactions);
+fs.writeFileSync("data.txt",data);
+
+const transaction= JSON.parse(fs.readFileSync("data.txt","utf-8"));
+console.log(transaction);
