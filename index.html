@@ -1,7 +1,72 @@
-const fs = require("fs");
-let transactions = {amount:300,category:"food",type:"expense"};
-let data = JSON.stringify(transactions);
-fs.writeFileSync("data.txt",data);
-
-const transaction= JSON.parse(fs.readFileSync("data.txt","utf-8"));
-console.log(transaction);
+const fs = require("fs"); 
+let transactions = JSON.parse(fs.readFileSync("data.txt","utf-8") ); 
+ const readline = require("readline"); 
+ const rl = readline.createInterface({input:process.stdin, output:process.stdout}); 
+ rl.question("want to add transaction? (yes/no)",function(answer){ 
+    if(answer==="yes"){ 
+  
+      rl.question("enter amount",function (amount){ 
+       rl.question("enter category",function(category){ 
+         rl.question("enter time",function(time){ 
+             rl.question("enter type",function(type){ 
+                function addtransactions(a,b,c,d){ 
+                 let newtransaction={amount:a,category:b,time:c,type:d}; 
+                 transactions.push(newtransaction); 
+                 } 
+                 addtransactions(Number(amount), category, time, type); 
+                 let data=JSON.stringify(transactions); 
+                    fs.writeFileSync("data.txt",data); 
+                      function calculateBalance(){ 
+      let bal =0; 
+      for(let i =0; i<transactions.length ; i++){ 
+        if (transactions[i].type==="income"){ 
+         bal+=transactions[i].amount; 
+        }else { 
+         bal-=transactions[i].amount; 
+     
+        } 
+        } 
+         return bal; 
+         } 
+        let balance=calculateBalance(); 
+        function showTransactions(){ 
+         for (let i=0; i<transactions.length; i++){ 
+          console.log(transactions[i].amount,"-",transactions[i].category,"-",transactions[i].type,"-",transactions[i].time); 
+          } 
+  
+           console.log("the account balance is", balance);} 
+           showTransactions(); 
+              rl.close();
+                   }); 
+                 }); 
+              }); 
+           }); 
+ 
+    
+                 
+    }else {  function calculateBalance(){ 
+    let bal =0; 
+    for(let i =0; i<transactions.length ; i++){ 
+        if (transactions[i].type==="income"){ 
+         bal+=transactions[i].amount; 
+        }else { 
+         bal-=transactions[i].amount; 
+     
+        } 
+        } 
+         return bal; 
+         } 
+      let balance=calculateBalance(); 
+      function showTransactions(){ 
+      for (let i=0; i<transactions.length; i++){ 
+       console.log(transactions[i].amount,"-",transactions[i].category,"-",transactions[i].type,"-",transactions[i].time); 
+       } 
+  
+        console.log("the account balance is", balance);} 
+         showTransactions(); 
+            rl.close();     
+    
+    
+    } 
+ }); 
+ 
